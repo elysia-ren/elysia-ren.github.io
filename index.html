@@ -1,4 +1,3 @@
-07.16 13:25
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -24,11 +23,13 @@
             --shadow: 0 10px 30px rgba(168, 112, 147, 0.18);
             --pink-glow: 0 0 25px rgba(255, 158, 208, 0.4);
         }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
+
         body {
             font-family: 'Quicksand', sans-serif;
             background: var(--background);
@@ -40,6 +41,7 @@
                 radial-gradient(circle at 10% 20%, rgba(255, 158, 208, 0.08) 0%, transparent 25%),
                 radial-gradient(circle at 90% 80%, rgba(166, 227, 255, 0.08) 0%, transparent 25%);
         }
+
         /* 花瓣飘落背景 */
         .petal-fall {
             position: fixed;
@@ -51,6 +53,7 @@
             z-index: -1;
             overflow: hidden;
         }
+
         .petal {
             position: absolute;
             background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M50,15 C58,15 65,18 70,23 C75,28 78,35 78,43 C78,51 75,58 70,63 C65,68 58,71 50,71 C42,71 35,68 30,63 C25,58 22,51 22,43 C22,35 25,28 30,23 C35,18 42,15 50,15 Z" fill="%23FF9ED0"/></svg>');
@@ -61,6 +64,7 @@
             opacity: 0.7;
             animation: fall linear infinite;
         }
+
         /* 导航栏 */
         .navbar {
             position: fixed;
@@ -77,6 +81,7 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
             border-bottom: 1px solid rgba(232, 198, 222, 0.2);
         }
+
         .logo {
             display: flex;
             align-items: center;
@@ -86,6 +91,7 @@
             color: var(--text);
             font-family: 'Quicksand', sans-serif;
         }
+
         .logo-icon {
             width: 45px;
             height: 45px;
@@ -98,6 +104,7 @@
             overflow: hidden;
             box-shadow: var(--pink-glow);
         }
+
         .logo-icon::before {
             content: '';
             position: absolute;
@@ -108,15 +115,18 @@
             background: radial-gradient(circle, rgba(255,255,255,0.4) 0%, transparent 70%);
             animation: rotate 8s linear infinite;
         }
+
         .logo-icon i {
             color: white;
             font-size: 1.4rem;
             animation: pulse 2s infinite alternate;
         }
+
         .nav-links {
             display: flex;
             gap: 30px;
         }
+
         .nav-links a {
             text-decoration: none;
             color: var(--text);
@@ -130,6 +140,7 @@
             align-items: center;
             gap: 8px;
         }
+
         .nav-links a::after {
             content: '';
             position: absolute;
@@ -141,20 +152,25 @@
             background: linear-gradient(to right, var(--primary), var(--accent));
             transition: width 0.3s ease;
         }
+
         .nav-links a:hover {
             color: var(--primary-dark);
         }
+
         .nav-links a:hover::after {
             width: 70%;
         }
+
         .nav-links a.active {
             background: linear-gradient(to right, var(--primary), var(--accent));
             color: white;
             box-shadow: var(--pink-glow);
         }
+
         .nav-links a i {
             font-size: 1.1rem;
         }
+
         /* 主内容区 */
         .hero {
             padding: 160px 5% 100px;
@@ -164,6 +180,7 @@
             position: relative;
             z-index: 10;
         }
+
         .hero h1 {
             font-size: 3.8rem;
             font-weight: 700;
@@ -176,6 +193,7 @@
             display: inline-block;
             text-shadow: 0 5px 15px rgba(232, 126, 184, 0.2);
         }
+
         .hero h1::after {
             content: '';
             position: absolute;
@@ -188,6 +206,7 @@
             border-radius: 3px;
             box-shadow: var(--pink-glow);
         }
+
         .hero p {
             font-size: 1.4rem;
             max-width: 800px;
@@ -196,12 +215,14 @@
             line-height: 1.7;
             font-weight: 500;
         }
+
         .cta-buttons {
             display: flex;
             justify-content: center;
             gap: 30px;
             margin: 50px 0;
         }
+
         .btn {
             padding: 18px 45px;
             border-radius: 50px;
@@ -219,10 +240,12 @@
             box-shadow: var(--shadow);
             z-index: 1;
         }
+
         .btn-primary {
             background: linear-gradient(135deg, var(--primary), var(--accent));
             color: white;
         }
+
         .btn::before {
             content: '';
             position: absolute;
@@ -235,13 +258,16 @@
             transition: opacity 0.3s ease;
             z-index: -1;
         }
+
         .btn:hover::before {
             opacity: 1;
         }
+
         .btn:hover {
             transform: translateY(-5px);
             box-shadow: 0 15px 30px rgba(255, 158, 208, 0.4);
         }
+
         /* 功能卡片区 */
         .features {
             padding: 80px 5%;
@@ -250,6 +276,7 @@
             position: relative;
             z-index: 10;
         }
+
         .section-title {
             text-align: center;
             font-size: 2.8rem;
@@ -258,6 +285,7 @@
             font-family: 'Quicksand', sans-serif;
             position: relative;
         }
+
         .section-title::after {
             content: '';
             position: absolute;
@@ -270,11 +298,13 @@
             border-radius: 2px;
             box-shadow: var(--pink-glow);
         }
+
         .cards-container {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
             gap: 40px;
         }
+
         .card {
             background: var(--card-bg);
             border-radius: 25px;
@@ -286,6 +316,7 @@
             position: relative;
             z-index: 2;
         }
+
         .card::before {
             content: '';
             position: absolute;
@@ -299,10 +330,12 @@
             animation: borderRotate 6s linear infinite;
             background-size: 400%;
         }
+
         .card:hover {
             transform: translateY(-15px);
             box-shadow: 0 25px 50px rgba(168, 112, 147, 0.25);
         }
+
         .card-icon {
             width: 100px;
             height: 100px;
@@ -316,11 +349,13 @@
             overflow: hidden;
             box-shadow: var(--pink-glow);
         }
+
         .card-icon i {
             font-size: 3rem;
             color: white;
             z-index: 2;
         }
+
         .card-icon::after {
             content: '';
             position: absolute;
@@ -331,10 +366,12 @@
             background: radial-gradient(circle, rgba(255,255,255,0.4) 0%, transparent 70%);
             animation: rotate 10s linear infinite;
         }
+
         .card-content {
             padding: 0 35px 45px;
             text-align: center;
         }
+
         .card h3 {
             font-size: 2rem;
             margin-bottom: 25px;
@@ -344,6 +381,7 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
+
         .card p {
             color: var(--text-light);
             line-height: 1.7;
@@ -351,6 +389,7 @@
             font-size: 1.15rem;
             font-weight: 500;
         }
+
         .card-btn {
             display: inline-block;
             padding: 14px 35px;
@@ -365,6 +404,7 @@
             overflow: hidden;
             font-size: 1.1rem;
         }
+
         .card-btn::before {
             content: '';
             position: absolute;
@@ -378,14 +418,17 @@
             transform: scaleX(0);
             transform-origin: right;
         }
+
         .card-btn:hover {
             color: white;
             border-color: transparent;
         }
+
         .card-btn:hover::before {
             transform: scaleX(1);
             transform-origin: left;
         }
+
         /* 页脚 */
         .footer {
             background: rgba(255, 255, 255, 0.8);
@@ -394,6 +437,7 @@
             border-top: 1px solid rgba(232, 198, 222, 0.3);
             margin-top: 100px;
         }
+
         .footer-content {
             max-width: 1200px;
             margin: 0 auto;
@@ -402,24 +446,29 @@
             justify-content: space-between;
             gap: 40px;
         }
+
         .footer-logo {
             flex: 1;
             min-width: 300px;
         }
+
         .footer-logo .logo {
             font-size: 2.2rem;
             margin-bottom: 25px;
         }
+
         .footer-logo p {
             color: var(--text-light);
             line-height: 1.7;
             max-width: 400px;
             font-size: 1.1rem;
         }
+
         .footer-links {
             display: flex;
             gap: 70px;
         }
+
         .footer-links h4 {
             font-size: 1.4rem;
             margin-bottom: 25px;
@@ -429,12 +478,15 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
+
         .footer-links ul {
             list-style: none;
         }
+
         .footer-links li {
             margin-bottom: 15px;
         }
+
         .footer-links a {
             text-decoration: none;
             color: var(--text-light);
@@ -444,19 +496,23 @@
             gap: 10px;
             font-size: 1.1rem;
         }
+
         .footer-links a:hover {
             color: var(--primary);
         }
+
         .footer-links i {
             width: 24px;
             text-align: center;
             font-size: 1.2rem;
         }
+
         .social-links {
             display: flex;
             gap: 18px;
             margin-top: 30px;
         }
+
         .social-icon {
             width: 50px;
             height: 50px;
@@ -470,12 +526,14 @@
             font-size: 1.4rem;
             box-shadow: var(--shadow);
         }
+
         .social-icon:hover {
             background: linear-gradient(135deg, var(--primary), var(--accent));
             color: white;
             transform: translateY(-5px);
             box-shadow: var(--pink-glow);
         }
+
         .copyright {
             text-align: center;
             padding: 30px 0 20px;
@@ -484,36 +542,43 @@
             border-top: 1px solid rgba(232, 198, 222, 0.3);
             font-size: 1.1rem;
         }
+
         /* 动画 */
         @keyframes float {
             0% { transform: translateY(0px); }
             50% { transform: translateY(-15px); }
             100% { transform: translateY(0px); }
         }
+
         @keyframes rotate {
             from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
         }
+
         @keyframes borderRotate {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
+
         @keyframes pulse {
             0% { transform: scale(1); }
             100% { transform: scale(1.1); }
         }
+
         @keyframes fall {
             to {
                 transform: translateY(100vh) rotate(360deg);
             }
         }
+
         /* 响应式设计 */
         @media (max-width: 992px) {
             .hero h1 { font-size: 3.2rem; }
             .section-title { font-size: 2.4rem; }
             .cards-container { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
         }
+
         @media (max-width: 768px) {
             .navbar { padding: 15px 5%; }
             .nav-links { gap: 15px; }
@@ -526,6 +591,7 @@
             .section-title { font-size: 2.2rem; }
             .footer-links { flex-wrap: wrap; gap: 40px; }
         }
+
         @media (max-width: 576px) {
             .logo { font-size: 1.6rem; }
             .logo-icon { width: 40px; height: 40px; }
@@ -542,6 +608,7 @@
 <body>
     <!-- 花瓣飘落背景 -->
     <div class="petal-fall" id="petal-container"></div>
+
     <!-- 导航栏 -->
     <nav class="navbar">
         <div class="logo">
@@ -558,19 +625,23 @@
             <a href="#"><i class="fas fa-star"></i> 收藏馆</a>
         </div>
     </nav>
+
     <!-- 主内容区 -->
     <section class="hero">
         <h1 class="animate__animated animate__fadeInDown">粉色妖精小姐的秘密基地</h1>
         <p class="animate__animated animate__fadeIn animate__delay-1s">欢迎来到梦幻的乐园，这里集合了实用工具与趣味游戏，让您的数字生活如花瓣般绚丽绽放</p>
+        
         <div class="cta-buttons animate__animated animate__fadeInUp animate__delay-2s">
             <a href="#" class="btn btn-primary">
                 <i class="fas fa-feather-alt"></i> 探索秘密花园
             </a>
         </div>
     </section>
+
     <!-- 功能卡片区 -->
     <section class="features">
         <h2 class="section-title animate__animated animate__fadeIn">基地<span>功能区</span></h2>
+        
         <div class="cards-container">
             <!-- 工具库卡片 -->
             <div class="card animate__animated animate__fadeInLeft">
@@ -585,6 +656,7 @@
                     </a>
                 </div>
             </div>
+            
             <!-- 游戏中心卡片 -->
             <div class="card animate__animated animate__fadeInUp">
                 <div class="card-icon">
@@ -598,6 +670,7 @@
                     </a>
                 </div>
             </div>
+            
             <!-- 资源中心卡片 -->
             <div class="card animate__animated animate__fadeInRight">
                 <div class="card-icon">
@@ -613,6 +686,7 @@
             </div>
         </div>
     </section>
+
     <!-- 页脚 -->
     <footer class="footer">
         <div class="footer-content">
@@ -631,6 +705,7 @@
                     <a href="#" class="social-icon"><i class="fab fa-pinterest"></i></a>
                 </div>
             </div>
+            
             <div class="footer-links">
                 <div>
                     <h4>基地地图</h4>
@@ -641,6 +716,7 @@
                         <li><a href="#"><i class="fas fa-gem"></i> 资源宝库</a></li>
                     </ul>
                 </div>
+                
                 <div>
                     <h4>访客指南</h4>
                     <ul>
@@ -652,48 +728,59 @@
                 </div>
             </div>
         </div>
+        
         <div class="copyright">
             <p>&copy; 2023 粉色妖精小姐的秘密基地 | 梦幻与实用交织的数字乐园</p>
         </div>
     </footer>
+
     <script>
         // 创建花瓣飘落效果
         document.addEventListener('DOMContentLoaded', function() {
             const petalContainer = document.getElementById('petal-container');
             const petalCount = 25;
+            
             for (let i = 0; i < petalCount; i++) {
                 const petal = document.createElement('div');
                 petal.className = 'petal';
+                
                 // 随机设置花瓣属性
                 const size = Math.random() * 20 + 10;
                 const left = Math.random() * 100;
                 const delay = Math.random() * 10;
                 const duration = Math.random() * 10 + 15;
                 const opacity = Math.random() * 0.5 + 0.3;
+                
                 petal.style.width = `${size}px`;
                 petal.style.height = `${size}px`;
                 petal.style.left = `${left}%`;
                 petal.style.opacity = opacity;
                 petal.style.animation = `fall ${duration}s linear infinite`;
                 petal.style.animationDelay = `${delay}s`;
+                
                 petalContainer.appendChild(petal);
             }
+            
             // 按钮涟漪效果
             document.querySelectorAll('.btn').forEach(button => {
                 button.addEventListener('click', function(e) {
                     const rect = this.getBoundingClientRect();
                     const x = e.clientX - rect.left;
                     const y = e.clientY - rect.top;
+                    
                     const ripple = document.createElement('span');
                     ripple.className = 'ripple';
                     ripple.style.left = `${x}px`;
                     ripple.style.top = `${y}px`;
+                    
                     this.appendChild(ripple);
+                    
                     setTimeout(() => {
                         ripple.remove();
                     }, 600);
                 });
             });
+            
             // 滚动动画
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
@@ -702,6 +789,7 @@
                     }
                 });
             }, { threshold: 0.1 });
+            
             document.querySelectorAll('.card, .section-title').forEach(el => {
                 observer.observe(el);
             });
@@ -709,4 +797,3 @@
     </script>
 </body>
 </html>
-
