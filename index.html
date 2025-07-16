@@ -171,6 +171,49 @@
             font-size: 1.1rem;
         }
 
+        /* 音量控制样式 - 修复显示问题 */
+        .volume-control {
+            position: relative;
+            display: flex; /* 添加显示控制 */
+            align-items: center;
+        }
+        .volume-icon {
+            background: linear-gradient(135deg, var(--primary), var(--accent)); /* 确保渐变方向与logo一致 */
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex; /* 确保图标居中 */
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: var(--pink-glow);
+            transition: all 0.3s ease;
+            z-index: 102; /* 提高层级防止被遮挡 */
+        }
+        .volume-icon:hover {
+            transform: scale(1.1);
+        }
+        .volume-slider-container {
+            position: absolute;
+            top: 50px;
+            right: 0;
+            background: rgba(255,255,255,0.95);
+            padding: 10px;
+            border-radius: 30px;
+            box-shadow: var(--shadow);
+            display: none;
+            z-index: 101;
+        }
+        .volume-slider-container.active {
+            display: block;
+        }
+        .volume-slider {
+            width: 120px;
+            margin: 0;
+        }
+
         /* 主内容区 */
         .hero {
             padding: 160px 5% 100px;
@@ -618,22 +661,27 @@
             <span>秘密基地</span>
         </div>
         <div class="nav-links">
-            <a href="#" class="active"><i class="fas fa-home"></i> 基地首页</a>
-            <a href="#"><i class="fas fa-wand-magic-sparkles"></i> 妖精工坊</a>
-            <a href="#"><i class="fas fa-gamepad"></i> 游戏花园</a>
-            <a href="#"><i class="fas fa-box-open"></i> 资源宝库</a>
-            <a href="#"><i class="fas fa-star"></i> 收藏馆</a>
+            <a href="index.html" class="active"><i class="fas fa-home"></i> 基地首页</a>
+            <a href="explore.html"><i class="fas fa-compass"></i> 妖精工坊</a>
+            <a href="games.html"><i class="fas fa-gamepad"></i> 游戏花园</a>
+            <a href="#"><i class="fas fa-heart"></i> 资源宝库</a>
+            <!-- 添加音量控制按钮到导航栏 -->
+            <div class="volume-control">
+                <button id="volumeIcon" class="volume-icon">
+                    <i class="fas fa-music"></i>
+                </button>
+            </div>
         </div>
     </nav>
 
     <!-- 主内容区 -->
     <section class="hero">
         <h1 class="animate__animated animate__fadeInDown">粉色妖精小姐的秘密基地</h1>
-        <p class="animate__animated animate__fadeIn animate__delay-1s">欢迎来到梦幻的乐园，这里集合了实用工具与趣味游戏，让您的数字生活如花瓣般绚丽绽放</p>
+        <p class="animate__animated animate__fadeIn animate__delay-1s">欢迎来到梦幻的乐园，这里集合了实用工具与趣味游戏，让您的生活如花般绚丽绽放</p>
         
         <div class="cta-buttons animate__animated animate__fadeInUp animate__delay-2s">
-            <a href="#" class="btn btn-primary">
-                <i class="fas fa-feather-alt"></i> 探索秘密花园
+            <a href="explore.html" class="btn btn-primary">
+                <i class="fas fa-feather-alt"></i> 探索永世乐土
             </a>
         </div>
     </section>
@@ -651,7 +699,7 @@
                 <div class="card-content">
                     <h3>妖精工坊</h3>
                     <p>精心打造的实用工具集合：数据转换、格式处理、加密解密等，让您的工作如魔法般轻松完成</p>
-                    <a href="#" class="card-btn">
+                    <a href="explore.html" class="card-btn">
                         <i class="fas fa-hat-wizard"></i> 施展魔法
                     </a>
                 </div>
@@ -665,7 +713,7 @@
                 <div class="card-content">
                     <h3>游戏花园</h3>
                     <p>充满趣味的休闲游戏乐园：谜题挑战、策略对决、反应测试等，让您在花瓣飘落中放松身心</p>
-                    <a href="#" class="card-btn">
+                    <a href="games.html" class="card-btn">
                         <i class="fas fa-play-circle"></i> 开始游戏
                     </a>
                 </div>
@@ -679,7 +727,7 @@
                 <div class="card-content">
                     <h3>资源宝库</h3>
                     <p>精选开发资源与设计素材：UI组件、API接口、学习资料等，为您的创意项目提供灵感源泉</p>
-                    <a href="#" class="card-btn">
+                    <a href="explore.html" class="card-btn">
                         <i class="fas fa-treasure-chest"></i> 开启宝箱
                     </a>
                 </div>
@@ -699,10 +747,10 @@
                 </div>
                 <p>一个融合梦幻设计与实用功能的乐园，为您提供便捷工具和休闲游戏，让数字生活如花瓣般绚烂</p>
                 <div class="social-links">
-                    <a href="#" class="social-icon"><i class="fab fa-github"></i></a>
-                    <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
-                    <a href="#" class="social-icon"><i class="fab fa-discord"></i></a>
-                    <a href="#" class="social-icon"><i class="fab fa-pinterest"></i></a>
+                    <a href="explore.html" class="social-icon"><i class="fab fa-github"></i></a>
+                    <a href="explore.html" class="social-icon"><i class="fab fa-twitter"></i></a>
+                    <a href="explore.html" class="social-icon"><i class="fab fa-discord"></i></a>
+                    <a href="explore.html" class="social-icon"><i class="fab fa-pinterest"></i></a>
                 </div>
             </div>
             
@@ -710,27 +758,27 @@
                 <div>
                     <h4>基地地图</h4>
                     <ul>
-                        <li><a href="#"><i class="fas fa-feather"></i> 秘密花园</a></li>
-                        <li><a href="#"><i class="fas fa-wand-magic-sparkles"></i> 妖精工坊</a></li>
-                        <li><a href="#"><i class="fas fa-gamepad"></i> 游戏花园</a></li>
-                        <li><a href="#"><i class="fas fa-gem"></i> 资源宝库</a></li>
+                        <li><a href="index.html"><i class="fas fa-feather"></i> 基地首页</a></li>
+                        <li><a href="explore.html"><i class="fas fa-wand-magic-sparkles"></i> 妖精工坊</a></li>
+                        <li><a href="games.html"><i class="fas fa-gamepad"></i> 游戏花园</a></li>
+                        <li><a href="explore.html"><i class="fas fa-gem"></i> 资源宝库</a></li>
                     </ul>
                 </div>
                 
                 <div>
                     <h4>访客指南</h4>
                     <ul>
-                        <li><a href="#"><i class="fas fa-question-circle"></i> 基地守则</a></li>
-                        <li><a href="#"><i class="fas fa-comments"></i> 访客留言</a></li>
-                        <li><a href="#"><i class="fas fa-envelope"></i> 联系妖精</a></li>
-                        <li><a href="#"><i class="fas fa-lightbulb"></i> 创意投稿</a></li>
+                        <li><a href="explore.html"><i class="fas fa-question-circle"></i> 基地守则</a></li>
+                        <li><a href="explore.html"><i class="fas fa-comments"></i> 访客留言</a></li>
+                        <li><a href="explore.html"><i class="fas fa-envelope"></i> 联系妖精</a></li>
+                        <li><a href="explore.html"><i class="fas fa-lightbulb"></i> 创意投稿</a></li>
                     </ul>
                 </div>
             </div>
         </div>
         
         <div class="copyright">
-            <p>&copy; 2023 粉色妖精小姐的秘密基地 | 梦幻与实用交织的数字乐园</p>
+            <p>&copy; 2025 粉色妖精小姐的秘密基地 | 梦幻与实用交织的数字乐园</p>
         </div>
     </footer>
 
@@ -738,7 +786,7 @@
         // 创建花瓣飘落效果
         document.addEventListener('DOMContentLoaded', function() {
             const petalContainer = document.getElementById('petal-container');
-            const petalCount = 25;
+            const petalCount = window.innerWidth < 768 ? 10 : 25; // 移动端减少花瓣数量
             
             for (let i = 0; i < petalCount; i++) {
                 const petal = document.createElement('div');
@@ -793,6 +841,52 @@
             document.querySelectorAll('.card, .section-title').forEach(el => {
                 observer.observe(el);
             });
+        });
+    </script>
+
+    <!-- 背景音乐和音量控制 -->
+    <audio id="backgroundMusic" loop>
+        <source src="致爱 A Song For Beloved - 宴宁_徐鲤.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        // 简化音量控制逻辑，只保留静音功能
+        const audio = document.getElementById('backgroundMusic');
+        const volumeIcon = document.getElementById('volumeIcon');
+    
+        function loadVolumeSettings() {
+            const isMuted = localStorage.getItem('bgmMuted') === 'true';
+            audio.muted = isMuted;
+            updateVolumeIcon(isMuted);
+        }
+    
+        function updateVolumeIcon(isMuted) {
+            const icon = volumeIcon.querySelector('i');
+            icon.className = isMuted ? 'fas fa-volume-mute' : 'fas fa-music';
+        }
+    
+        volumeIcon.addEventListener('click', () => {
+            audio.muted = !audio.muted;
+            localStorage.setItem('bgmMuted', audio.muted);
+            updateVolumeIcon(audio.muted);
+        });
+    
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'bgmMuted') {
+                audio.muted = e.newValue === 'true';
+                updateVolumeIcon(audio.muted);
+            }
+        });
+    
+        // 修改为默认自动播放
+        loadVolumeSettings();
+        // 页面加载后立即尝试播放音乐
+        audio.play().catch(e => {
+            console.log('自动播放失败，等待用户交互后播放:', e);
+            // 保留点击播放的备选方案
+            window.addEventListener('click', () => {
+                if (audio.paused) audio.play();
+            }, { once: true });
         });
     </script>
 </body>

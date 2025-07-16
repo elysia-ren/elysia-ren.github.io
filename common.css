@@ -1,0 +1,19 @@
+/* 合并重复样式并优化响应式断点 */
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .hamburger-menu { display: block; }
+  .game-grid { grid-template-columns: 1fr; }
+  .volume-control { right: 10px; }
+  .navbar { padding: 15px 5%; }
+  .hero h1 { font-size: 2.7rem; }
+}
+
+@media (max-width: 480px) {
+  h1 { font-size: 1.5rem; }
+  .volume-icon { touch-action: manipulation; min-width: 44px; min-height: 44px; }
+  .back-btn { padding: 8px 15px; }
+  .logo { font-size: 1.6rem; }
+}
+
+/* 统一触摸交互样式 */
+.volume-icon, .back-btn, .social-icon, .btn { touch-action: manipulation; min-width: 44px; min-height: 44px; }

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>游戏花园 - 爱莉希雅主题</title>
+    <!-- 统一Font Awesome版本为6.4.0 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        :root {
+            /* 添加与index.html一致的主题变量 */
+            --primary: #FF9ED0;
+            --primary-light: #FFC2E2;
+            --primary-dark: #E87EB8;
+            --accent: #FFD1DC;
+            --pink-glow: 0 0 25px rgba(255, 158, 208, 0.4);
+        }
+        /* 基础主题样式 - 需根据实际index.html调整 */
+        body {
+            background-color: #f8f0ff;
+            color: #5a2b81;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            position: relative;
+        }
+        .back-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            /* 统一为粉色系按钮 */
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            box-shadow: var(--pink-glow);
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+        .back-button:hover {
+            transform: scale(1.05);
+            background: var(--primary-dark);
+        }
+        /* 音量控制样式 - 统一为index.html风格 */
+        .volume-control {
+            position: absolute;
+            top: 20px;
+            right: 140px;
+            z-index: 101; /* 确保在返回按钮左侧且可见 */
+        }
+        .volume-icon {
+            /* 应用与index.html相同的粉色渐变背景 */
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: var(--pink-glow);
+            transition: all 0.3s ease;
+        }
+        .volume-icon:hover {
+            transform: scale(1.1);
+            background: #c9a027;
+        }
+        .volume-slider-container {
+            position: absolute;
+            top: 50px;
+            right: 0;
+            background: rgba(255,255,255,0.95);
+            padding: 10px;
+            border-radius: 30px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+            display: none;
+        }
+        .volume-slider-container.active {
+            display: block;
+        }
+        .volume-slider {
+            width: 120px;
+            margin: 0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding-top: 60px;
+        }
+        .game-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .game-card {
+            background: white;
+            border-radius: 20px;
+            width: 180px;
+            height: 180px;
+            margin: 15px;
+            box-shadow: 0 5px 15px rgba(90, 43, 129, 0.1);
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .game-card:hover {
+            transform: translateY(-5px);
+        }
+        .game-icon {
+            font-size: 50px;
+            margin-bottom: 15px;
+            color: #d4af37;
+        }
+        .game-name {
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+            margin: 0;
+        }
+        h1 {
+            color: #d4af37;
+            text-align: center;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+</style>
+</head>
+<body>
+    <!-- 移除重复的返回按钮和音量控制 -->
+    <button class="back-button" onclick="window.location.href='index.html'">
+        <i class="fas fa-arrow-left"></i> 返回主页
+    </button>
+    <div class="volume-control">
+        <button id="volumeIcon" class="volume-icon">
+            <i class="fas fa-music"></i>
+        </button>
+    </div>
+    <div class="container animate__animated animate__fadeIn">
+        <h1><i class="fas fa-gamepad"></i> 爱莉希雅的游戏花园</h1>
+        <div class="game-grid">
+            <!-- 游戏卡片保持不变 -->
+        </div>
+    </div>
+    <!-- 背景音乐 -->
+    <audio id="backgroundMusic" loop>
+        <source src="致爱 A Song For Beloved - 宴宁_徐鲤.mp3" type="audio/mpeg">
+     </audio>
+    <script>
+        // 简化并统一音量控制逻辑
+        const audio = document.getElementById('backgroundMusic');
+        const volumeIcon = document.getElementById('volumeIcon');
+    
+        function loadVolumeSettings() {
+            const isMuted = localStorage.getItem('bgmMuted') === 'true';
+            audio.muted = isMuted;
+            updateVolumeIcon(isMuted);
+        }
+    
+        function updateVolumeIcon(isMuted) {
+            const icon = volumeIcon.querySelector('i');
+            icon.className = isMuted ? 'fas fa-volume-mute' : 'fas fa-music';
+        }
+    
+        volumeIcon.addEventListener('click', () => {
+            audio.muted = !audio.muted;
+            localStorage.setItem('bgmMuted', audio.muted);
+            updateVolumeIcon(audio.muted);
+        });
+    
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'bgmMuted') {
+                audio.muted = e.newValue === 'true';
+                updateVolumeIcon(audio.muted);
+            }
+        });
+    
+        loadVolumeSettings();
+        // 修改为默认自动播放
+        audio.play().catch(e => {
+            console.log('自动播放失败，等待用户交互后播放:', e);
+            // 保留点击播放的备选方案
+            window.addEventListener('click', () => {
+                if (audio.paused) audio.play();
+            }, { once: true });
+        });
+    </script>
+</body>
+</html>
