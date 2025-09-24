@@ -4,22 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>游戏花园 - 爱莉希雅主题</title>
-    <!-- 统一Font Awesome版本为6.4.0 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <style>
         :root {
-            /* 添加与index.html一致的主题变量 */
-            --primary: #FF9ED0;
-            --primary-light: #FFC2E2;
-            --primary-dark: #E87EB8;
-            --accent: #FFD1DC;
-            --pink-glow: 0 0 25px rgba(255, 158, 208, 0.4);
+            --primary: #D8A3E0; /* 淡紫色作为主色调 */
+            --primary-light: #EBD4F0; /* 淡紫浅色 */
+            --primary-dark: #B87BC0; /* 淡紫深色 */
+            --secondary: #A6D1FF; /* 浅蓝色作为辅助色 */
+            --secondary-light: #C9E0FF; /* 浅蓝浅色 */
+            --accent: #FFE0E9; /* 弱化的粉色作为点缀 */
+            --glow: 0 0 25px rgba(216, 163, 224, 0.3); /* 淡紫色发光效果 */
         }
-        /* 基础主题样式 - 需根据实际index.html调整 */
         body {
-            background-color: #f8f0ff;
-            color: #5a2b81;
+            background-color: #f8f5fb;
+            color: #5A4B6E;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 20px;
@@ -29,7 +28,6 @@
             position: absolute;
             top: 20px;
             right: 20px;
-            /* 统一为粉色系按钮 */
             background: linear-gradient(to right, var(--primary), var(--accent));
             color: white;
             border: none;
@@ -37,7 +35,7 @@
             padding: 10px 20px;
             font-size: 16px;
             cursor: pointer;
-            box-shadow: var(--pink-glow);
+            box-shadow: var(--glow);
             transition: all 0.3s ease;
             z-index: 100;
         }
@@ -45,15 +43,13 @@
             transform: scale(1.05);
             background: var(--primary-dark);
         }
-        /* 音量控制样式 - 统一为index.html风格 */
         .volume-control {
             position: absolute;
             top: 20px;
             right: 140px;
-            z-index: 101; /* 确保在返回按钮左侧且可见 */
+            z-index: 101;
         }
         .volume-icon {
-            /* 应用与index.html相同的粉色渐变背景 */
             background: linear-gradient(135deg, var(--primary), var(--accent));
             color: white;
             border: none;
@@ -64,12 +60,12 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            box-shadow: var(--pink-glow);
+            box-shadow: var(--glow);
             transition: all 0.3s ease;
         }
         .volume-icon:hover {
             transform: scale(1.1);
-            background: #c9a027;
+            background: var(--primary-dark);
         }
         .volume-slider-container {
             position: absolute;
@@ -104,7 +100,7 @@
             width: 180px;
             height: 180px;
             margin: 15px;
-            box-shadow: 0 5px 15px rgba(90, 43, 129, 0.1);
+            box-shadow: 0 5px 15px rgba(90, 75, 110, 0.1);
             transition: transform 0.3s ease;
             display: flex;
             flex-direction: column;
@@ -118,7 +114,7 @@
         .game-icon {
             font-size: 50px;
             margin-bottom: 15px;
-            color: #d4af37;
+            color: var(--primary-dark);
         }
         .game-name {
             font-size: 18px;
@@ -127,7 +123,7 @@
             margin: 0;
         }
         h1 {
-            color: #d4af37;
+            color: var(--primary-dark);
             text-align: center;
             margin-bottom: 30px;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
@@ -135,7 +131,6 @@
 </style>
 </head>
 <body>
-    <!-- 移除重复的返回按钮和音量控制 -->
     <button class="back-button" onclick="window.location.href='index.html'">
         <i class="fas fa-arrow-left"></i> 返回主页
     </button>
@@ -150,12 +145,10 @@
             <!-- 游戏卡片保持不变 -->
         </div>
     </div>
-    <!-- 背景音乐 -->
     <audio id="backgroundMusic" loop>
         <source src="致爱 A Song For Beloved - 宴宁_徐鲤.mp3" type="audio/mpeg">
      </audio>
     <script>
-        // 简化并统一音量控制逻辑
         const audio = document.getElementById('backgroundMusic');
         const volumeIcon = document.getElementById('volumeIcon');
     
@@ -184,10 +177,8 @@
         });
     
         loadVolumeSettings();
-        // 修改为默认自动播放
         audio.play().catch(e => {
             console.log('自动播放失败，等待用户交互后播放:', e);
-            // 保留点击播放的备选方案
             window.addEventListener('click', () => {
                 if (audio.paused) audio.play();
             }, { once: true });
