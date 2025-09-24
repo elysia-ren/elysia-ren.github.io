@@ -4,14 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>探索区域 - 爱莉希雅主题</title>
-    <!-- 统一使用 Font Awesome 6.4.0 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital@1&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary: #D8A3E0; /* 淡紫色作为主色调 */
+            --primary-light: #EBD4F0; /* 淡紫浅色 */
+            --primary-dark: #B87BC0; /* 淡紫深色 */
+            --accent: #FFE0E9; /* 弱化的粉色作为点缀 */
+            --glow: 0 0 25px rgba(216, 163, 224, 0.3); /* 淡紫色发光效果 */
+        }
         body {
-            background-color: #fff0f5;
-            color: #ff69b4;
+            background-color: #f8f5fb;
+            color: var(--primary-dark);
             font-family: 'Playfair Display', serif;
             margin: 0;
             padding: 20px;
@@ -26,7 +32,7 @@
         .back-button {
             position: absolute;
             top: 20px;
-            right: 20px; /* 左移位置 */
+            right: 20px;
             background: linear-gradient(135deg, var(--primary), var(--accent));
             color: white;
             border: none;
@@ -34,14 +40,13 @@
             padding: 10px 20px;
             font-size: 16px;
             cursor: pointer;
-            box-shadow: var(--pink-glow);
+            box-shadow: var(--glow);
             transition: all 0.3s ease;
         }
-        /* 音量控制样式 */
         .volume-control {
             position: absolute;
             top: 20px;
-            right: 20px; /* 放在返回按钮右侧 */
+            right: 20px;
         }
         .volume-icon {
             background: linear-gradient(135deg, var(--primary), var(--accent));
@@ -54,12 +59,12 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            box-shadow: var(--pink-glow);
+            box-shadow: var(--glow);
             transition: all 0.3s ease;
         }
         .volume-icon:hover {
             transform: scale(1.1);
-            background: #ff69b4;
+            background: var(--primary-dark);
         }
         .volume-slider-container {
             position: absolute;
@@ -89,15 +94,15 @@
             font-size: 56px;
             line-height: 1.6;
             margin: 0;
-            color: #ff69b4;
+            color: var(--primary-dark);
             font-style: italic;
-            text-shadow: 2px 2px 5px rgba(255, 182, 193, 0.5);
+            text-shadow: 2px 2px 5px rgba(235, 212, 240, 0.5);
             animation: text-glow 2s ease-in-out infinite alternate;
         }
-        /* 花瓣装饰效果 */
+        /* 花瓣装饰（淡紫色） */
         .petal {
             position: absolute;
-            background-color: #ffc0cb;
+            background-color: #EBD4F0;
             border-radius: 50% 50% 50% 0;
             opacity: 0.7;
             animation: falling linear infinite;
@@ -119,8 +124,8 @@
             }
         }
         @keyframes text-glow {
-            from { text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #ff69b4, 0 0 40px #ff69b4; }
-            to { text-shadow: 0 0 20px #fff, 0 0 30px #ff85a2, 0 0 40px #ff85a2, 0 0 50px #ff85a2; }
+            from { text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #D8A3E0, 0 0 40px #D8A3E0; }
+            to { text-shadow: 0 0 20px #fff, 0 0 30px #EBD4F0, 0 0 40px #EBD4F0, 0 0 50px #EBD4F0; }
         }
     </style>
 </head>
@@ -128,18 +133,15 @@
     <button class="back-button" onclick="window.location.href='index.html'">
         <i class="fas fa-arrow-left"></i> 返回主页
     </button>
-    <!-- 音量控制 -->
     <div class="volume-control">
         <button id="volumeIcon" class="volume-icon">
-            <i class="fas fa-music"></i> <!-- 音符图标 -->
+            <i class="fas fa-music"></i>
         </button>
     </div>
     <div class="content animate__animated animate__fadeIn">
         <p class="message">前面的区域，以后再来探索吧♪</p>
     </div>
-    <!-- 花瓣生成脚本 -->
     <script>
-        // 创建花瓣元素
         function createPetals() {
             const body = document.body;
             const petalCount = 20;
@@ -148,12 +150,9 @@
                 const petal = document.createElement('div');
                 petal.classList.add('petal');
                 
-                // 随机花瓣大小
                 const size = Math.random() * 20 + 10;
                 petal.style.width = `${size}px`;
                 petal.style.height = `${size}px`;
-                
-                // 随机位置和动画延迟
                 petal.style.left = `${Math.random() * 100}vw`;
                 petal.style.animationDuration = `${Math.random() * 10 + 10}s`;
                 petal.style.animationDelay = `${Math.random() * 10}s`;
@@ -163,17 +162,14 @@
             }
         }
         
-        // 页面加载完成后创建花瓣
         window.addEventListener('load', createPetals);
     </script>
 
-    <!-- 背景音乐和音量控制 -->
     <audio id="backgroundMusic" loop>
         <source src="致爱 A Song For Beloved - 宴宁_徐鲤.mp3" type="audio/mpeg">
     </audio>
 
     <script>
-        // 简化音量控制逻辑
         const audio = document.getElementById('backgroundMusic');
         const volumeIcon = document.getElementById('volumeIcon');
     
@@ -202,10 +198,8 @@
         });
     
         loadVolumeSettings();
-        // 修改为默认自动播放
         audio.play().catch(e => {
             console.log('自动播放失败，等待用户交互后播放:', e);
-            // 保留点击播放的备选方案
             window.addEventListener('click', () => {
                 if (audio.paused) audio.play();
             }, { once: true });
