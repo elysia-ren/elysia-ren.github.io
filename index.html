@@ -38,11 +38,11 @@
             position: relative;
             min-height: 100vh;
             background-image: 
-                radial-gradient(circle at 10% 20%, rgba(255, 158, 208, 0.08) 0%, transparent 25%),
+                radial-gradient(circle at 10% 20%, rgba(216, 163, 224, 0.08) 0%, transparent 25%),
                 radial-gradient(circle at 90% 80%, rgba(166, 227, 255, 0.08) 0%, transparent 25%);
         }
 
-        /* 花瓣飘落背景 */
+        /* 花瓣飘落背景（修改为淡紫色） */
         .petal-fall {
             position: fixed;
             top: 0;
@@ -56,7 +56,7 @@
 
         .petal {
             position: absolute;
-            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M50,15 C58,15 65,18 70,23 C75,28 78,35 78,43 C78,51 75,58 70,63 C65,68 58,71 50,71 C42,71 35,68 30,63 C25,58 22,51 22,43 C22,35 25,28 30,23 C35,18 42,15 50,15 Z" fill="%23FF9ED0"/></svg>');
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M50,15 C58,15 65,18 70,23 C75,28 78,35 78,43 C78,51 75,58 70,63 C65,68 58,71 50,71 C42,71 35,68 30,63 C25,58 22,51 22,43 C22,35 25,28 30,23 C35,18 42,15 50,15 Z" fill="%23EBD4F0"/></svg>');
             background-size: contain;
             background-repeat: no-repeat;
             width: 30px;
@@ -79,7 +79,7 @@
             background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(10px);
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            border-bottom: 1px solid rgba(232, 198, 222, 0.2);
+            border-bottom: 1px solid rgba(235, 212, 240, 0.2);
         }
 
         .logo {
@@ -102,7 +102,7 @@
             justify-content: center;
             position: relative;
             overflow: hidden;
-            box-shadow: var(--pink-glow);
+            box-shadow: var(--glow);
         }
 
         .logo-icon::before {
@@ -164,54 +164,29 @@
         .nav-links a.active {
             background: linear-gradient(to right, var(--primary), var(--accent));
             color: white;
-            box-shadow: var(--pink-glow);
+            box-shadow: var(--glow);
         }
 
-        .nav-links a i {
-            font-size: 1.1rem;
-        }
-
-        /* 音量控制样式 - 修复显示问题 */
+        /* 音量控制样式 */
         .volume-control {
             position: relative;
-            display: flex; /* 添加显示控制 */
+            display: flex;
             align-items: center;
         }
         .volume-icon {
-            background: linear-gradient(135deg, var(--primary), var(--accent)); /* 确保渐变方向与logo一致 */
+            background: linear-gradient(135deg, var(--primary), var(--accent));
             color: white;
             border: none;
             border-radius: 50%;
             width: 40px;
             height: 40px;
-            display: flex; /* 确保图标居中 */
+            display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            box-shadow: var(--pink-glow);
+            box-shadow: var(--glow);
             transition: all 0.3s ease;
-            z-index: 102; /* 提高层级防止被遮挡 */
-        }
-        .volume-icon:hover {
-            transform: scale(1.1);
-        }
-        .volume-slider-container {
-            position: absolute;
-            top: 50px;
-            right: 0;
-            background: rgba(255,255,255,0.95);
-            padding: 10px;
-            border-radius: 30px;
-            box-shadow: var(--shadow);
-            display: none;
-            z-index: 101;
-        }
-        .volume-slider-container.active {
-            display: block;
-        }
-        .volume-slider {
-            width: 120px;
-            margin: 0;
+            z-index: 102;
         }
 
         /* 主内容区 */
@@ -234,7 +209,7 @@
             font-family: 'Quicksand', sans-serif;
             position: relative;
             display: inline-block;
-            text-shadow: 0 5px 15px rgba(232, 126, 184, 0.2);
+            text-shadow: 0 5px 15px rgba(216, 163, 224, 0.2);
         }
 
         .hero h1::after {
@@ -247,23 +222,7 @@
             height: 5px;
             background: linear-gradient(to right, var(--primary), var(--accent));
             border-radius: 3px;
-            box-shadow: var(--pink-glow);
-        }
-
-        .hero p {
-            font-size: 1.4rem;
-            max-width: 800px;
-            margin: 40px auto 50px;
-            color: var(--text-light);
-            line-height: 1.7;
-            font-weight: 500;
-        }
-
-        .cta-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            margin: 50px 0;
+            box-shadow: var(--glow);
         }
 
         .btn {
@@ -289,46 +248,12 @@
             color: white;
         }
 
-        .btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle, rgba(255,255,255,0.4) 0%, transparent 70%);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            z-index: -1;
-        }
-
-        .btn:hover::before {
-            opacity: 1;
-        }
-
         .btn:hover {
             transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(255, 158, 208, 0.4);
+            box-shadow: 0 15px 30px rgba(216, 163, 224, 0.4);
         }
 
         /* 功能卡片区 */
-        .features {
-            padding: 80px 5%;
-            max-width: 1400px;
-            margin: 0 auto;
-            position: relative;
-            z-index: 10;
-        }
-
-        .section-title {
-            text-align: center;
-            font-size: 2.8rem;
-            margin-bottom: 70px;
-            color: var(--text);
-            font-family: 'Quicksand', sans-serif;
-            position: relative;
-        }
-
         .section-title::after {
             content: '';
             position: absolute;
@@ -339,25 +264,7 @@
             height: 4px;
             background: linear-gradient(to right, var(--primary), var(--accent));
             border-radius: 2px;
-            box-shadow: var(--pink-glow);
-        }
-
-        .cards-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 40px;
-        }
-
-        .card {
-            background: var(--card-bg);
-            border-radius: 25px;
-            overflow: hidden;
-            box-shadow: var(--shadow);
-            transition: transform 0.4s ease, box-shadow 0.4s ease;
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.6);
-            position: relative;
-            z-index: 2;
+            box-shadow: var(--glow);
         }
 
         .card::before {
@@ -367,16 +274,11 @@
             left: -2px;
             right: -2px;
             bottom: -2px;
-            background: linear-gradient(45deg, var(--primary), var(--accent), #ffd1dc);
+            background: linear-gradient(45deg, var(--primary), var(--secondary), var(--accent));
             z-index: -1;
             border-radius: 27px;
             animation: borderRotate 6s linear infinite;
             background-size: 400%;
-        }
-
-        .card:hover {
-            transform: translateY(-15px);
-            box-shadow: 0 25px 50px rgba(168, 112, 147, 0.25);
         }
 
         .card-icon {
@@ -390,29 +292,7 @@
             margin: 40px auto 30px;
             position: relative;
             overflow: hidden;
-            box-shadow: var(--pink-glow);
-        }
-
-        .card-icon i {
-            font-size: 3rem;
-            color: white;
-            z-index: 2;
-        }
-
-        .card-icon::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle, rgba(255,255,255,0.4) 0%, transparent 70%);
-            animation: rotate 10s linear infinite;
-        }
-
-        .card-content {
-            padding: 0 35px 45px;
-            text-align: center;
+            box-shadow: var(--glow);
         }
 
         .card h3 {
@@ -423,14 +303,6 @@
             background: linear-gradient(to right, var(--primary), var(--accent));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-        }
-
-        .card p {
-            color: var(--text-light);
-            line-height: 1.7;
-            margin-bottom: 30px;
-            font-size: 1.15rem;
-            font-weight: 500;
         }
 
         .card-btn {
@@ -462,54 +334,13 @@
             transform-origin: right;
         }
 
-        .card-btn:hover {
-            color: white;
-            border-color: transparent;
-        }
-
-        .card-btn:hover::before {
-            transform: scaleX(1);
-            transform-origin: left;
-        }
-
         /* 页脚 */
         .footer {
             background: rgba(255, 255, 255, 0.8);
             backdrop-filter: blur(10px);
             padding: 60px 5% 30px;
-            border-top: 1px solid rgba(232, 198, 222, 0.3);
+            border-top: 1px solid rgba(235, 212, 240, 0.3);
             margin-top: 100px;
-        }
-
-        .footer-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            gap: 40px;
-        }
-
-        .footer-logo {
-            flex: 1;
-            min-width: 300px;
-        }
-
-        .footer-logo .logo {
-            font-size: 2.2rem;
-            margin-bottom: 25px;
-        }
-
-        .footer-logo p {
-            color: var(--text-light);
-            line-height: 1.7;
-            max-width: 400px;
-            font-size: 1.1rem;
-        }
-
-        .footer-links {
-            display: flex;
-            gap: 70px;
         }
 
         .footer-links h4 {
@@ -522,38 +353,8 @@
             -webkit-text-fill-color: transparent;
         }
 
-        .footer-links ul {
-            list-style: none;
-        }
-
-        .footer-links li {
-            margin-bottom: 15px;
-        }
-
-        .footer-links a {
-            text-decoration: none;
-            color: var(--text-light);
-            transition: color 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 1.1rem;
-        }
-
         .footer-links a:hover {
             color: var(--primary);
-        }
-
-        .footer-links i {
-            width: 24px;
-            text-align: center;
-            font-size: 1.2rem;
-        }
-
-        .social-links {
-            display: flex;
-            gap: 18px;
-            margin-top: 30px;
         }
 
         .social-icon {
@@ -574,16 +375,7 @@
             background: linear-gradient(135deg, var(--primary), var(--accent));
             color: white;
             transform: translateY(-5px);
-            box-shadow: var(--pink-glow);
-        }
-
-        .copyright {
-            text-align: center;
-            padding: 30px 0 20px;
-            color: var(--text-light);
-            margin-top: 50px;
-            border-top: 1px solid rgba(232, 198, 222, 0.3);
-            font-size: 1.1rem;
+            box-shadow: var(--glow);
         }
 
         /* 动画 */
@@ -665,7 +457,7 @@
             <a href="explore.html"><i class="fas fa-compass"></i> 妖精工坊</a>
             <a href="games.html"><i class="fas fa-gamepad"></i> 游戏花园</a>
             <a href="#"><i class="fas fa-heart"></i> 资源宝库</a>
-            <!-- 添加音量控制按钮到导航栏 -->
+            <!-- 音量控制按钮 -->
             <div class="volume-control">
                 <button id="volumeIcon" class="volume-icon">
                     <i class="fas fa-music"></i>
@@ -701,34 +493,6 @@
                     <p>精心打造的实用工具集合：数据转换、格式处理、加密解密等，让您的工作如魔法般轻松完成</p>
                     <a href="explore.html" class="card-btn">
                         <i class="fas fa-hat-wizard"></i> 施展魔法
-                    </a>
-                </div>
-            </div>
-            
-            <!-- 游戏中心卡片 -->
-            <div class="card animate__animated animate__fadeInUp">
-                <div class="card-icon">
-                    <i class="fas fa-gamepad"></i>
-                </div>
-                <div class="card-content">
-                    <h3>游戏花园</h3>
-                    <p>充满趣味的休闲游戏乐园：谜题挑战、策略对决、反应测试等，让您在花瓣飘落中放松身心</p>
-                    <a href="games.html" class="card-btn">
-                        <i class="fas fa-play-circle"></i> 开始游戏
-                    </a>
-                </div>
-            </div>
-            
-            <!-- 资源中心卡片 -->
-            <div class="card animate__animated animate__fadeInRight">
-                <div class="card-icon">
-                    <i class="fas fa-gem"></i>
-                </div>
-                <div class="card-content">
-                    <h3>资源宝库</h3>
-                    <p>精选开发资源与设计素材：UI组件、API接口、学习资料等，为您的创意项目提供灵感源泉</p>
-                    <a href="explore.html" class="card-btn">
-                        <i class="fas fa-treasure-chest"></i> 开启宝箱
                     </a>
                 </div>
             </div>
@@ -786,49 +550,23 @@
         // 创建花瓣飘落效果
         document.addEventListener('DOMContentLoaded', function() {
             const petalContainer = document.getElementById('petal-container');
-            const petalCount = window.innerWidth < 768 ? 10 : 25; // 移动端减少花瓣数量
+            const petalCount = window.innerWidth < 768 ? 10 : 25;
             
             for (let i = 0; i < petalCount; i++) {
                 const petal = document.createElement('div');
                 petal.className = 'petal';
                 
-                // 随机设置花瓣属性
                 const size = Math.random() * 20 + 10;
                 const left = Math.random() * 100;
-                const delay = Math.random() * 10;
-                const duration = Math.random() * 10 + 15;
-                const opacity = Math.random() * 0.5 + 0.3;
-                
                 petal.style.width = `${size}px`;
                 petal.style.height = `${size}px`;
-                petal.style.left = `${left}%`;
-                petal.style.opacity = opacity;
-                petal.style.animation = `fall ${duration}s linear infinite`;
-                petal.style.animationDelay = `${delay}s`;
+                petal.style.left = `${left}vw`;
+                petal.style.animationDuration = `${Math.random() * 10 + 10}s`;
+                petal.style.animationDelay = `${Math.random() * 10}s`;
                 
                 petalContainer.appendChild(petal);
             }
-            
-            // 按钮涟漪效果
-            document.querySelectorAll('.btn').forEach(button => {
-                button.addEventListener('click', function(e) {
-                    const rect = this.getBoundingClientRect();
-                    const x = e.clientX - rect.left;
-                    const y = e.clientY - rect.top;
-                    
-                    const ripple = document.createElement('span');
-                    ripple.className = 'ripple';
-                    ripple.style.left = `${x}px`;
-                    ripple.style.top = `${y}px`;
-                    
-                    this.appendChild(ripple);
-                    
-                    setTimeout(() => {
-                        ripple.remove();
-                    }, 600);
-                });
-            });
-            
+
             // 滚动动画
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
@@ -850,7 +588,6 @@
     </audio>
 
     <script>
-        // 简化音量控制逻辑，只保留静音功能
         const audio = document.getElementById('backgroundMusic');
         const volumeIcon = document.getElementById('volumeIcon');
     
@@ -878,12 +615,9 @@
             }
         });
     
-        // 修改为默认自动播放
         loadVolumeSettings();
-        // 页面加载后立即尝试播放音乐
         audio.play().catch(e => {
             console.log('自动播放失败，等待用户交互后播放:', e);
-            // 保留点击播放的备选方案
             window.addEventListener('click', () => {
                 if (audio.paused) audio.play();
             }, { once: true });
@@ -891,4 +625,3 @@
     </script>
 </body>
 </html>
-
