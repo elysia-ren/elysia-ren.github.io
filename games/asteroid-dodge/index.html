@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+<title>虚空陨石逃生 | 游戏花园</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0a1a;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100dvh;font-family:'Segoe UI',sans-serif;color:#e8d5f5;overflow:hidden;touch-action:none}
+.top-bar{position:fixed;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:10px 16px;background:rgba(10,10,26,.9);z-index:10}
+.back-btn{background:linear-gradient(135deg,#D8A3E0,#FFE0E9);color:#fff;border:none;border-radius:50px;padding:8px 16px;font-size:.85rem;cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:6px}
+.info{display:flex;gap:16px;font-size:.95rem;font-weight:600}
+canvas{display:block}
+.overlay{position:fixed;inset:0;background:rgba(10,10,26,.85);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:20;backdrop-filter:blur(6px)}
+.overlay h1{font-size:2rem;margin-bottom:10px;background:linear-gradient(to right,#D8A3E0,#FFE0E9);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.overlay p{color:#b8a5cc;margin-bottom:20px}
+.overlay button{background:linear-gradient(135deg,#D8A3E0,#FFE0E9);color:#fff;border:none;border-radius:50px;padding:14px 36px;font-size:1.1rem;cursor:pointer;font-weight:600}
+</style>
+</head>
+<body>
+<div class="top-bar">
+  <a href="../../games.html" class="back-btn"><i class="fas fa-arrow-left"></i> 返回</a>
+  <div class="info"><span>得分: <span id="score">0</span></span><span>护盾: <span id="shield">0</span></span></div>
+</div>
+<canvas id="gc"></canvas>
+<div class="overlay" id="startScreen">
+  <h1>虚空陨石逃生</h1>
+  <p>←→/AD 或触屏左右移动 · 躲避陨石 · 收集护盾</p>
+  <button onclick="startGame()">开始游戏</button>
+</div>
+<div class="overlay" id="overScreen" style="display:none">
+  <h1>游戏结束</h1>
+  <p>存活时间: <span id="finalScore">0</span> 秒</p>
+  <button onclick="startGame()">再来一局</button>
+</div>
+<div class="overlay" id="pauseOverlay" style="display:none">
+  <h1>已暂停</h1>
+  <p>按 P / Esc 继续</p>
+</div>
+<script>
+/* ========== 虚空陨石逃生 ========== */
+const canvas = document.getElementById('gc');
+const ctx = canvas.getContext('2d');
+let W, H, player, asteroids, pickups, score, shield, alive, frame, difficulty;
+let paused = false;
+
+function resize() {
+  W = Math.min(window.innerWidth, 500);
+  H = Math.min(window.innerHeight - 60, 700);
+  canvas.width = W; canvas.height = H;
+}
+resize();
+window.addEventListener('resize', resize);
+
+/* 玩家（三角飞船） */
+function resetPlayer() {
+  player = { x: W / 2, y: H - 60, w: 30, speed: 6, vx: 0 };
+}
+
+/* 星空背景 */
+const stars = Array.from({length:80}, () => ({
+  x: Math.random() * 500, y: Math.random() * 700, s: Math.random() * 2 + 0.5, a: Math.random()
+}));
+
+function startGame() {
+  document.getElementById('startScreen').style.display = 'none';
+  document.getElementById('overScreen').style.display = 'none';
+  resize(); resetPlayer();
+  asteroids = []; pickups = [];
+  score = 0; shield = 0; frame = 0; alive = true; difficulty = 1;
+  document.getElementById('score').textContent = '0';
+  document.getElementById('shield').textContent = '0';
+  loop();
+}
+
+/* 控制 */
+let moveDir = 0;
+document.addEventListener('keydown', e => {
+  if (['ArrowLeft','ArrowRight','a','d'].includes(e.key)) e.preventDefault();
+  if (e.key === 'ArrowLeft' || e.key === 'a') moveDir = -1;
+  if (e.key === 'ArrowRight' || e.key === 'd') moveDir = 1;
+  if ((e.key === 'p' || e.key === 'P' || e.key === 'Escape') && alive) togglePause();
+});
+
+function togglePause() {
+  paused = !paused;
+  document.getElementById('pauseOverlay').style.display = paused ? 'flex' : 'none';
+  if (!paused) loop();
+}
+document.addEventListener('keyup', e => {
+  if (['ArrowLeft','a','ArrowRight','d'].includes(e.key)) moveDir = 0;
+});
+
+/* 触屏跟随 */
+canvas.addEventListener('touchmove', e => {
+  e.preventDefault();
+  const tx = e.touches[0].clientX - canvas.getBoundingClientRect().left;
+  moveDir = tx < player.x - 10 ? -1 : tx > player.x + 10 ? 1 : 0;
+});
+canvas.addEventListener('touchend', () => moveDir = 0);
+
+/* 生成陨石 */
+function spawnAsteroid() {
+  const r = 10 + Math.random() * 20;
+  asteroids.push({
+    x: r + Math.random() * (W - r * 2),
+    y: -r * 2,
+    r, speed: 1.5 + Math.random() * difficulty * 0.8,
+    rot: 0, rotSpeed: (Math.random() - 0.5) * 0.05
+  });
+}
+
+/* 生成护盾 */
+function spawnPickup() {
+  pickups.push({
+    x: 20 + Math.random() * (W - 40),
+    y: -20,
+    r: 10,
+    speed: 2
+  });
+}
+
+/* 主循环 */
+function loop() {
+  if (!alive || paused) return;
+  frame++;
+
+  // 难度递增
+  difficulty = 1 + frame / 600;
+
+  // 生成
+  if (frame % Math.max(15, 40 - Math.floor(difficulty * 5)) === 0) spawnAsteroid();
+  if (frame % 180 === 0) spawnPickup();
+
+  // 更新玩家
+  player.vx = moveDir * player.speed;
+  player.x = Math.max(player.w, Math.min(W - player.w, player.x + player.vx));
+
+  // 更新陨石
+  asteroids.forEach(a => { a.y += a.speed; a.rot += a.rotSpeed; });
+  asteroids = asteroids.filter(a => a.y < H + 50);
+
+  // 更新护盾
+  pickups.forEach(p => p.y += p.speed);
+  pickups = pickups.filter(p => p.y < H + 30);
+
+  // 碰撞检测 - 陨石
+  for (let ai = asteroids.length - 1; ai >= 0; ai--) {
+    const a = asteroids[ai];
+    const dx = player.x - a.x, dy = (player.y - 10) - a.y;
+    if (Math.sqrt(dx*dx + dy*dy) < a.r + player.w * 0.4) {
+      asteroids.splice(ai, 1); // 移除陨石，防止连续判定
+      if (shield > 0) { shield--; document.getElementById('shield').textContent = shield; }
+      else { gameOver(); return; }
+    }
+  }
+
+  // 碰撞检测 - 护盾
+  for (let i = pickups.length - 1; i >= 0; i--) {
+    const p = pickups[i];
+    const dx = player.x - p.x, dy = player.y - p.y;
+    if (Math.sqrt(dx*dx + dy*dy) < p.r + player.w * 0.5) {
+      shield++;
+      document.getElementById('shield').textContent = shield;
+      pickups.splice(i, 1);
+    }
+  }
+
+  // 得分
+  if (frame % 10 === 0) {
+    score = Math.floor(frame / 10);
+    document.getElementById('score').textContent = score;
+  }
+
+  draw();
+  requestAnimationFrame(loop);
+}
+
+/* 绘制 */
+function draw() {
+  ctx.fillStyle = '#0a0a1a';
+  ctx.fillRect(0, 0, W, H);
+
+  // 星空
+  stars.forEach(s => {
+    s.a += (Math.random() - 0.5) * 0.1;
+    ctx.globalAlpha = 0.3 + 0.3 * Math.sin(s.a + frame * 0.02);
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(s.x % W, s.y % H, s.s, s.s);
+  });
+  ctx.globalAlpha = 1;
+
+  // 陨石
+  asteroids.forEach(a => {
+    ctx.save();
+    ctx.translate(a.x, a.y);
+    ctx.rotate(a.rot);
+    ctx.fillStyle = '#6B5B7B';
+    ctx.beginPath();
+    // 不规则多边形模拟陨石
+    for (let i = 0; i < 7; i++) {
+      const angle = (i / 7) * Math.PI * 2;
+      const r = a.r * (0.7 + 0.3 * Math.sin(i * 2.5));
+      if (i === 0) ctx.moveTo(Math.cos(angle) * r, Math.sin(angle) * r);
+      else ctx.lineTo(Math.cos(angle) * r, Math.sin(angle) * r);
+    }
+    ctx.closePath(); ctx.fill();
+    ctx.strokeStyle = 'rgba(216,163,224,.3)'; ctx.lineWidth = 1; ctx.stroke();
+    ctx.restore();
+  });
+
+  // 护盾拾取
+  pickups.forEach(p => {
+    const pulse = 0.7 + 0.3 * Math.sin(frame * 0.1);
+    ctx.fillStyle = `rgba(166,209,255,${pulse})`;
+    ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 12px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('🛡', p.x, p.y + 4);
+  });
+
+  // 飞船
+  ctx.save();
+  ctx.translate(player.x, player.y);
+  ctx.fillStyle = '#D8A3E0';
+  ctx.beginPath();
+  ctx.moveTo(0, -18);
+  ctx.lineTo(-14, 14);
+  ctx.lineTo(0, 8);
+  ctx.lineTo(14, 14);
+  ctx.closePath();
+  ctx.fill();
+  // 引擎火焰
+  ctx.fillStyle = `rgba(255,224,233,${0.5 + 0.5 * Math.sin(frame * 0.3)})`;
+  ctx.beginPath();
+  ctx.moveTo(-6, 14);
+  ctx.lineTo(0, 22 + Math.random() * 6);
+  ctx.lineTo(6, 14);
+  ctx.closePath();
+  ctx.fill();
+  ctx.restore();
+
+  // 护盾指示
+  if (shield > 0) {
+    ctx.strokeStyle = `rgba(166,209,255,${0.3 + 0.2 * Math.sin(frame * 0.1)})`;
+    ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(player.x, player.y, 28, 0, Math.PI * 2); ctx.stroke();
+  }
+}
+
+function gameOver() {
+  alive = false;
+  document.getElementById('finalScore').textContent = score;
+  document.getElementById('overScreen').style.display = 'flex';
+}
+</script>
+</body>
+</html>

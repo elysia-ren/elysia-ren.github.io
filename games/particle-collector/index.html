@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+<title>航线粒子收集 | 游戏花园</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0a1a;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100dvh;font-family:'Segoe UI',sans-serif;color:#e8d5f5;overflow:hidden;touch-action:none}
+.top-bar{position:fixed;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:10px 16px;background:rgba(10,10,26,.9);z-index:10}
+.back-btn{background:linear-gradient(135deg,#D8A3E0,#FFE0E9);color:#fff;border:none;border-radius:50px;padding:8px 16px;font-size:.85rem;cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:6px}
+.info{display:flex;gap:16px;font-size:.95rem;font-weight:600}
+canvas{display:block}
+.overlay{position:fixed;inset:0;background:rgba(10,10,26,.85);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:20;backdrop-filter:blur(6px)}
+.overlay h1{font-size:2rem;margin-bottom:10px;background:linear-gradient(to right,#D8A3E0,#FFE0E9);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.overlay p{color:#b8a5cc;margin-bottom:20px}
+.overlay button{background:linear-gradient(135deg,#D8A3E0,#FFE0E9);color:#fff;border:none;border-radius:50px;padding:14px 36px;font-size:1.1rem;cursor:pointer;font-weight:600}
+</style>
+</head>
+<body>
+<div class="top-bar">
+  <a href="../../games.html" class="back-btn"><i class="fas fa-arrow-left"></i> 返回</a>
+  <div class="info"><span>得分: <span id="score">0</span></span><span>生命: <span id="lives">3</span></span></div>
+</div>
+<canvas id="gc"></canvas>
+<div class="overlay" id="startScreen">
+  <h1>航线粒子收集</h1>
+  <p>鼠标/触屏/方向键移动收集器<br>收集蓝色光点 · 躲避红色危险粒子</p>
+  <button onclick="startGame()">开始游戏</button>
+</div>
+<div class="overlay" id="overScreen" style="display:none">
+  <h1>游戏结束</h1>
+  <p>得分: <span id="finalScore">0</span></p>
+  <button onclick="startGame()">再来一局</button>
+</div>
+<script>
+/* ========== 航线粒子收集 ========== */
+const canvas = document.getElementById('gc');
+const ctx = canvas.getContext('2d');
+let W, H, collector, goodParticles, badParticles, score, lives, alive, frame, animId;
+let mouseX, mouseY, moveTarget;
+
+function resize() {
+  W = Math.min(window.innerWidth, 600);
+  H = Math.min(window.innerHeight - 60, 700);
+  canvas.width = W; canvas.height = H;
+}
+resize();
+window.addEventListener('resize', resize);
+
+function startGame() {
+  document.getElementById('startScreen').style.display = 'none';
+  document.getElementById('overScreen').style.display = 'none';
+  resize();
+  collector = { x: W / 2, y: H / 2, r: 18, speed: 4 };
+  goodParticles = []; badParticles = [];
+  score = 0; lives = 3; frame = 0; alive = true;
+  mouseX = W / 2; mouseY = H / 2; moveTarget = null;
+  document.getElementById('score').textContent = '0';
+  document.getElementById('lives').textContent = '3';
+  cancelAnimationFrame(animId);
+  loop();
+}
+
+/* 控制 */
+let keys = {};
+document.addEventListener('keydown', e => {
+  if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','w','a','s','d'].includes(e.key)) e.preventDefault();
+  keys[e.key] = true;
+});
+document.addEventListener('keyup', e => { keys[e.key] = false; });
+
+canvas.addEventListener('mousemove', e => {
+  mouseX = e.clientX - canvas.getBoundingClientRect().left;
+  mouseY = e.clientY - canvas.getBoundingClientRect().top;
+  moveTarget = 'mouse';
+});
+canvas.addEventListener('touchmove', e => {
+  e.preventDefault();
+  mouseX = e.touches[0].clientX - canvas.getBoundingClientRect().left;
+  mouseY = e.touches[0].clientY - canvas.getBoundingClientRect().top;
+  moveTarget = 'mouse';
+});
+canvas.addEventListener('touchstart', e => {
+  e.preventDefault();
+  mouseX = e.touches[0].clientX - canvas.getBoundingClientRect().left;
+  mouseY = e.touches[0].clientY - canvas.getBoundingClientRect().top;
+  moveTarget = 'mouse';
+});
+
+/* 生成粒子 */
+function spawnGood() {
+  const angle = Math.random() * Math.PI * 2;
+  const speed = 0.3 + Math.random() * 0.8;
+  goodParticles.push({
+    x: Math.random() * W,
+    y: Math.random() * H,
+    vx: Math.cos(angle) * speed,
+    vy: Math.sin(angle) * speed,
+    r: 6 + Math.random() * 4,
+    life: 300 + Math.random() * 200,
+    hue: 200 + Math.random() * 40 // 蓝色系
+  });
+}
+
+function spawnBad() {
+  // 从边缘生成
+  const side = Math.floor(Math.random() * 4);
+  let x, y;
+  if (side === 0) { x = 0; y = Math.random() * H; }
+  else if (side === 1) { x = W; y = Math.random() * H; }
+  else if (side === 2) { x = Math.random() * W; y = 0; }
+  else { x = Math.random() * W; y = H; }
+
+  const angle = Math.atan2(H/2 - y + (Math.random()-.5)*200, W/2 - x + (Math.random()-.5)*200);
+  const speed = 1 + Math.random() * 1.5;
+  badParticles.push({
+    x, y,
+    vx: Math.cos(angle) * speed,
+    vy: Math.sin(angle) * speed,
+    r: 8 + Math.random() * 5,
+    life: 500
+  });
+}
+
+/* 主循环 */
+function loop() {
+  if (!alive) return;
+  frame++;
+
+  // 难度递增
+  const spawnRate = Math.max(10, 30 - Math.floor(frame / 200));
+  if (frame % spawnRate === 0) spawnGood();
+  if (frame % Math.max(40, 80 - Math.floor(frame / 100)) === 0) spawnBad();
+
+  // 更新收集器位置
+  let dx = 0, dy = 0;
+  if (keys['ArrowLeft'] || keys['a']) dx = -1;
+  if (keys['ArrowRight'] || keys['d']) dx = 1;
+  if (keys['ArrowUp'] || keys['w']) dy = -1;
+  if (keys['ArrowDown'] || keys['s']) dy = 1;
+
+  if (dx || dy) {
+    moveTarget = 'keys';
+    const len = Math.sqrt(dx*dx + dy*dy);
+    collector.x += dx / len * collector.speed;
+    collector.y += dy / len * collector.speed;
+  } else if (moveTarget === 'mouse') {
+    const ddx = mouseX - collector.x;
+    const ddy = mouseY - collector.y;
+    const dist = Math.sqrt(ddx*ddx + ddy*ddy);
+    if (dist > 3) {
+      collector.x += ddx / dist * Math.min(collector.speed, dist);
+      collector.y += ddy / dist * Math.min(collector.speed, dist);
+    }
+  }
+
+  // 边界
+  collector.x = Math.max(collector.r, Math.min(W - collector.r, collector.x));
+  collector.y = Math.max(collector.r, Math.min(H - collector.r, collector.y));
+
+  // 更新好粒子
+  for (let i = goodParticles.length - 1; i >= 0; i--) {
+    const p = goodParticles[i];
+    p.x += p.vx; p.y += p.vy;
+    p.life--;
+    // 边界反弹
+    if (p.x < p.r || p.x > W - p.r) p.vx *= -1;
+    if (p.y < p.r || p.y > H - p.r) p.vy *= -1;
+    p.x = Math.max(p.r, Math.min(W - p.r, p.x));
+    p.y = Math.max(p.r, Math.min(H - p.r, p.y));
+
+    // 收集检测
+    const ddx = collector.x - p.x, ddy = collector.y - p.y;
+    if (Math.sqrt(ddx*ddx + ddy*ddy) < collector.r + p.r) {
+      score += 10;
+      document.getElementById('score').textContent = score;
+      goodParticles.splice(i, 1);
+      continue;
+    }
+
+    if (p.life <= 0) goodParticles.splice(i, 1);
+  }
+
+  // 更新坏粒子
+  for (let i = badParticles.length - 1; i >= 0; i--) {
+    const p = badParticles[i];
+    p.x += p.vx; p.y += p.vy;
+    p.life--;
+
+    // 碰撞检测
+    const ddx = collector.x - p.x, ddy = collector.y - p.y;
+    if (Math.sqrt(ddx*ddx + ddy*ddy) < collector.r + p.r * 0.7) {
+      lives--;
+      document.getElementById('lives').textContent = lives;
+      badParticles.splice(i, 1);
+      if (lives <= 0) { gameOver(); return; }
+      continue;
+    }
+
+    // 出界或生命结束
+    if (p.x < -50 || p.x > W + 50 || p.y < -50 || p.y > H + 50 || p.life <= 0) {
+      badParticles.splice(i, 1);
+    }
+  }
+
+  draw();
+  animId = requestAnimationFrame(loop);
+}
+
+/* 绘制 */
+function draw() {
+  ctx.fillStyle = '#0a0a1a';
+  ctx.fillRect(0, 0, W, H);
+
+  // 背景微粒
+  ctx.globalAlpha = 0.03;
+  for (let i = 0; i < 30; i++) {
+    ctx.fillStyle = '#D8A3E0';
+    ctx.fillRect(Math.random() * W, Math.random() * H, 1, 1);
+  }
+  ctx.globalAlpha = 1;
+
+  // 好粒子（蓝色光点）
+  goodParticles.forEach(p => {
+    const alpha = Math.min(1, p.life / 50);
+    ctx.globalAlpha = alpha * 0.3;
+    ctx.fillStyle = `hsl(${p.hue}, 80%, 70%)`;
+    ctx.beginPath(); ctx.arc(p.x, p.y, p.r + 4, 0, Math.PI * 2); ctx.fill();
+    ctx.globalAlpha = alpha;
+    ctx.fillStyle = `hsl(${p.hue}, 80%, 80%)`;
+    ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#fff';
+    ctx.beginPath(); ctx.arc(p.x, p.y, p.r * 0.4, 0, Math.PI * 2); ctx.fill();
+    ctx.globalAlpha = 1;
+  });
+
+  // 坏粒子（红色危险）
+  badParticles.forEach(p => {
+    ctx.fillStyle = 'rgba(255,60,80,.15)';
+    ctx.beginPath(); ctx.arc(p.x, p.y, p.r + 6, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = 'rgba(255,80,100,.7)';
+    ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = 'rgba(255,200,200,.5)';
+    ctx.beginPath(); ctx.arc(p.x, p.y, p.r * 0.3, 0, Math.PI * 2); ctx.fill();
+  });
+
+  // 收集器
+  ctx.fillStyle = 'rgba(216,163,224,.15)';
+  ctx.beginPath(); ctx.arc(collector.x, collector.y, collector.r + 8, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = 'rgba(216,163,224,.4)';
+  ctx.beginPath(); ctx.arc(collector.x, collector.y, collector.r, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = '#D8A3E0';
+  ctx.beginPath(); ctx.arc(collector.x, collector.y, collector.r * 0.6, 0, Math.PI * 2); ctx.fill();
+  // 核心亮点
+  ctx.fillStyle = '#fff';
+  ctx.beginPath(); ctx.arc(collector.x, collector.y, collector.r * 0.2, 0, Math.PI * 2); ctx.fill();
+}
+
+function gameOver() {
+  alive = false;
+  cancelAnimationFrame(animId);
+  document.getElementById('finalScore').textContent = score;
+  document.getElementById('overScreen').style.display = 'flex';
+}
+</script>
+</body>
+</html>

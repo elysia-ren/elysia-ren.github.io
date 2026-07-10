@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+<title>磁力消消方阵 | 游戏花园</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#1a1028;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100dvh;font-family:'Segoe UI',sans-serif;color:#e8d5f5;overflow:hidden;touch-action:none}
+.top-bar{position:fixed;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:10px 16px;background:rgba(26,16,40,.9);z-index:10}
+.back-btn{background:linear-gradient(135deg,#D8A3E0,#FFE0E9);color:#fff;border:none;border-radius:50px;padding:8px 16px;font-size:.85rem;cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:6px}
+.info{display:flex;gap:16px;font-size:.95rem;font-weight:600}
+.game-area{display:flex;flex-direction:column;align-items:center;gap:12px}
+.board{display:grid;grid-template-columns:repeat(8,1fr);gap:4px;padding:10px;background:rgba(216,163,224,.08);border-radius:14px}
+.cell{width:min(42px,10vw);height:min(42px,10vw);border-radius:10px;cursor:pointer;transition:all .15s ease;display:flex;align-items:center;justify-content:center;font-size:min(1.1rem,3.5vw);user-select:none;border:2px solid transparent;-webkit-tap-highlight-color:transparent}
+.cell:hover{transform:scale(1.08)}
+.cell.selected{border-color:#fff;transform:scale(1.1);box-shadow:0 0 12px rgba(255,255,255,.4)}
+.cell.hint{animation:pulse-hint .8s infinite alternate}
+@keyframes pulse-hint{from{transform:scale(1)}to{transform:scale(1.06)}}
+.msg{font-size:1rem;min-height:24px;color:#D8A3E0}
+.overlay{position:fixed;inset:0;background:rgba(26,16,40,.85);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:20;backdrop-filter:blur(6px)}
+.overlay h1{font-size:2rem;margin-bottom:10px;background:linear-gradient(to right,#D8A3E0,#FFE0E9);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.overlay p{color:#b8a5cc;margin-bottom:20px}
+.overlay button{background:linear-gradient(135deg,#D8A3E0,#FFE0E9);color:#fff;border:none;border-radius:50px;padding:14px 36px;font-size:1.1rem;cursor:pointer;font-weight:600}
+@media(max-width:400px){.cell{width:min(36px,10vw);height:min(36px,10vw);font-size:.95rem}}
+</style>
+</head>
+<body>
+<div class="top-bar">
+  <a href="../../games.html" class="back-btn"><i class="fas fa-arrow-left"></i> 返回</a>
+  <div class="info"><span>得分: <span id="score">0</span></span><span>步数: <span id="moves">30</span></span><span>目标: <span id="target">500</span></span></div>
+</div>
+<div class="game-area">
+  <div class="board" id="board"></div>
+  <div class="msg" id="msg">点击相连同色方块消除</div>
+</div>
+<div class="overlay" id="startScreen">
+  <h1>磁力消消方阵</h1>
+  <p>点击消除相连同色方块 · 支持斜向相连<br>限定步数达成目标分数</p>
+  <button onclick="startGame()">开始游戏</button>
+</div>
+<div class="overlay" id="winScreen" style="display:none">
+  <h1>🎉 达成目标！</h1>
+  <p>得分: <span id="winScore">0</span></p>
+  <button onclick="startGame()">再来一局</button>
+</div>
+<div class="overlay" id="loseScreen" style="display:none">
+  <h1>步数用尽</h1>
+  <p>得分: <span id="loseScore">0</span> / <span id="loseTarget">500</span></p>
+  <button onclick="startGame()">再来一局</button>
+</div>
+<script>
+/* ========== 磁力消消方阵 ========== */
+const ROWS = 8, COLS = 8;
+const COLORS = ['#D8A3E0','#A6D1FF','#FFE0E9','#A3D9B1','#FFB347','#FF6B8A'];
+const board = document.getElementById('board');
+const msg = document.getElementById('msg');
+let grid, score, moves, target, selected, animating;
+
+function startGame() {
+  document.getElementById('startScreen').style.display = 'none';
+  document.getElementById('winScreen').style.display = 'none';
+  document.getElementById('loseScreen').style.display = 'none';
+  score = 0; moves = 30; target = 500; selected = null; animating = false;
+  document.getElementById('score').textContent = '0';
+  document.getElementById('moves').textContent = '30';
+  document.getElementById('target').textContent = target;
+  initGrid();
+  render();
+}
+
+/* 初始化网格 */
+function initGrid() {
+  grid = Array.from({length: ROWS}, () =>
+    Array.from({length: COLS}, () => Math.floor(Math.random() * COLORS.length))
+  );
+  // 确保没有初始消除
+  let changed = true;
+  while (changed) {
+    changed = false;
+    for (let r = 0; r < ROWS; r++) {
+      for (let c = 0; c < COLS; c++) {
+        // 横向3连
+        if (c >= 2 && grid[r][c] === grid[r][c-1] && grid[r][c] === grid[r][c-2]) {
+          grid[r][c] = (grid[r][c] + 1) % COLORS.length; changed = true;
+        }
+        // 纵向3连
+        if (r >= 2 && grid[r][c] === grid[r-1][c] && grid[r][c] === grid[r-2][c]) {
+          grid[r][c] = (grid[r][c] + 1) % COLORS.length; changed = true;
+        }
+      }
+    }
+  }
+}
+
+/* 渲染 */
+function render() {
+  board.innerHTML = '';
+  for (let r = 0; r < ROWS; r++) {
+    for (let c = 0; c < COLS; c++) {
+      const div = document.createElement('div');
+      div.className = 'cell';
+      const v = grid[r][c];
+      if (v >= 0) {
+        div.style.background = COLORS[v];
+        div.dataset.row = r;
+        div.dataset.col = c;
+        div.addEventListener('click', () => onCellClick(r, c));
+        div.addEventListener('touchstart', e => { e.preventDefault(); onCellClick(r, c); });
+      } else {
+        div.style.background = 'transparent';
+      }
+      if (selected && selected[0] === r && selected[1] === c) div.classList.add('selected');
+      board.appendChild(div);
+    }
+  }
+}
+
+/* 查找相连同色 (BFS, 包含斜向) */
+function findConnected(r, c) {
+  const color = grid[r][c];
+  if (color < 0) return [];
+  const visited = Array.from({length: ROWS}, () => Array(COLS).fill(false));
+  const queue = [[r, c]];
+  const connected = [];
+  visited[r][c] = true;
+
+  while (queue.length) {
+    const [cr, cc] = queue.shift();
+    connected.push([cr, cc]);
+    // 8方向（含斜向）
+    for (let dr = -1; dr <= 1; dr++) {
+      for (let dc = -1; dc <= 1; dc++) {
+        if (dr === 0 && dc === 0) continue;
+        const nr = cr + dr, nc = cc + dc;
+        if (nr >= 0 && nr < ROWS && nc >= 0 && nc < COLS && !visited[nr][nc] && grid[nr][nc] === color) {
+          visited[nr][nc] = true;
+          queue.push([nr, nc]);
+        }
+      }
+    }
+  }
+  return connected;
+}
+
+/* 点击方块 */
+function onCellClick(r, c) {
+  if (animating || moves <= 0) return;
+  const connected = findConnected(r, c);
+  if (connected.length < 2) {
+    msg.textContent = '需要至少2个相连方块';
+    return;
+  }
+
+  // 消除
+  const pts = connected.length * connected.length * 5;
+  score += pts;
+  moves--;
+  document.getElementById('score').textContent = score;
+  document.getElementById('moves').textContent = moves;
+  msg.textContent = `消除 ${connected.length} 个方块，+${pts} 分`;
+
+  connected.forEach(([cr, cc]) => { grid[cr][cc] = -1; });
+  render();
+
+  // 下落动画
+  animating = true;
+  setTimeout(() => {
+    dropBlocks();
+    fillEmpty();
+    render();
+    animating = false;
+
+    // 检查胜利/失败
+    if (score >= target) {
+      document.getElementById('winScore').textContent = score;
+      document.getElementById('winScreen').style.display = 'flex';
+    } else if (moves <= 0) {
+      document.getElementById('loseScore').textContent = score;
+      document.getElementById('loseTarget').textContent = target;
+      document.getElementById('loseScreen').style.display = 'flex';
+    }
+  }, 200);
+}
+
+/* 方块下落 */
+function dropBlocks() {
+  for (let c = 0; c < COLS; c++) {
+    let writePos = ROWS - 1;
+    for (let r = ROWS - 1; r >= 0; r--) {
+      if (grid[r][c] >= 0) {
+        if (r !== writePos) {
+          grid[writePos][c] = grid[r][c];
+          grid[r][c] = -1;
+        }
+        writePos--;
+      }
+    }
+  }
+}
+
+/* 填充空位 */
+function fillEmpty() {
+  for (let r = 0; r < ROWS; r++) {
+    for (let c = 0; c < COLS; c++) {
+      if (grid[r][c] < 0) {
+        grid[r][c] = Math.floor(Math.random() * COLORS.length);
+      }
+    }
+  }
+}
+</script>
+</body>
+</html>

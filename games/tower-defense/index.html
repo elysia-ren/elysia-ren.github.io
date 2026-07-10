@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+<title>防线点阵守卫 | 游戏花园</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#1a1028;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100dvh;font-family:'Segoe UI',sans-serif;color:#e8d5f5;overflow:hidden;touch-action:none}
+.top-bar{position:fixed;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:10px 16px;background:rgba(26,16,40,.9);z-index:10;gap:10px;flex-wrap:wrap}
+.back-btn{background:linear-gradient(135deg,#D8A3E0,#FFE0E9);color:#fff;border:none;border-radius:50px;padding:8px 16px;font-size:.85rem;cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:6px}
+.info{display:flex;gap:16px;font-size:.9rem;font-weight:600}
+canvas{display:block;cursor:crosshair}
+.overlay{position:fixed;inset:0;background:rgba(26,16,40,.85);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:20;backdrop-filter:blur(6px)}
+.overlay h1{font-size:2rem;margin-bottom:10px;background:linear-gradient(to right,#D8A3E0,#FFE0E9);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.overlay p{color:#b8a5cc;margin-bottom:20px;text-align:center;line-height:1.6}
+.overlay button{background:linear-gradient(135deg,#D8A3E0,#FFE0E9);color:#fff;border:none;border-radius:50px;padding:14px 36px;font-size:1.1rem;cursor:pointer;font-weight:600}
+.build-bar{position:fixed;bottom:10px;display:flex;gap:10px;z-index:10;flex-wrap:wrap;justify-content:center}
+.build-btn{background:rgba(216,163,224,.15);border:2px solid rgba(216,163,224,.4);border-radius:12px;padding:8px 14px;color:#D8A3E0;font-size:.85rem;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .2s}
+.build-btn:hover,.build-btn.selected{background:rgba(216,163,224,.3);border-color:#D8A3E0}
+.build-btn .cost{color:#FFD700;font-weight:700}
+</style>
+</head>
+<body>
+<div class="top-bar">
+  <a href="../../games.html" class="back-btn"><i class="fas fa-arrow-left"></i> 返回</a>
+  <div class="info">
+    <span>波次: <span id="wave">0</span></span>
+    <span>生命: <span id="lives">20</span></span>
+    <span>点数: <span id="points">100</span></span>
+  </div>
+</div>
+<canvas id="gc"></canvas>
+<div class="build-bar" id="buildBar">
+  <button class="build-btn selected" data-type="basic" onclick="selectTower('basic')">
+    <i class="fas fa-square"></i> 基础屏障 <span class="cost">💰20</span>
+  </button>
+  <button class="build-btn" data-type="sniper" onclick="selectTower('sniper')">
+    <i class="fas fa-crosshairs"></i> 精准模块 <span class="cost">💰40</span>
+  </button>
+  <button class="build-btn" data-type="splash" onclick="selectTower('splash')">
+    <i class="fas fa-burst"></i> 范围模块 <span class="cost">💰60</span>
+  </button>
+</div>
+<div class="overlay" id="startScreen">
+  <h1>防线点阵守卫</h1>
+  <p>点击空地放置防御模块 · 阻止巡游者到达终点<br>基础屏障: 连续射击 · 精准模块: 远程高伤 · 范围模块: 爆炸伤害</p>
+  <button onclick="startGame()">开始游戏</button>
+</div>
+<div class="overlay" id="overScreen" style="display:none">
+  <h1 id="endTitle">游戏结束</h1>
+  <p>坚持了 <span id="finalWave">0</span> 波</p>
+  <button onclick="startGame()">再来一局</button>
+</div>
+<div class="overlay" id="pauseOverlay" style="display:none">
+  <h1>已暂停</h1>
+  <p>按 P / Esc 继续</p>
+</div>
+<script>
+/* ========== 防线点阵守卫 ========== */
+const canvas = document.getElementById('gc');
+const ctx = canvas.getContext('2d');
+// roundRect polyfill
+if (!ctx.roundRect) {
+    CanvasRenderingContext2D.prototype.roundRect = function(x,y,w,h,r) {
+        r = typeof r === 'number' ? r : 0;
+        this.moveTo(x+r,y); this.arcTo(x+w,y,x+w,y+h,r); this.arcTo(x+w,y+h,x,y+h,r);
+        this.arcTo(x,y+h,x,y,r); this.arcTo(x,y,x+w,y,r); this.closePath();
+    };
+}
+let W, H, CELL, COLS, ROWS;
+let towers, enemies, bullets, lives, points, wave, waveTimer, selectedType, path, animId;
+let enemyQueue = [], enemySpawnTimer = 0, paused = false;
+
+/* 路径定义 (固定蜿蜒路径) */
+function buildPath() {
+  path = [];
+  const mid = Math.floor(ROWS / 2);
+  // 从左到右蜿蜒
+  let x = 0, y = 0, dir = 1;
+  path.push({ x: 0, y: 0 });
+  while (x < COLS - 1) {
+    // 向右走一段
+    const steps = 2 + Math.floor(Math.random() * 3);
+    for (let i = 0; i < steps && x < COLS - 1; i++) { x++; path.push({ x, y }); }
+    // 向下或向上
+    if (x < COLS - 1) {
+      const dy = dir > 0 ? 1 : -1;
+      const vertSteps = Math.min(2 + Math.floor(Math.random() * 2), dir > 0 ? ROWS - 1 - y : y);
+      for (let i = 0; i < vertSteps; i++) { y += dy; path.push({ x, y }); }
+      dir *= -1;
+    }
+  }
+}
+
+function resize() {
+  W = Math.min(window.innerWidth, 700);
+  H = Math.min(window.innerHeight - 110, 500);
+  canvas.width = W; canvas.height = H;
+  CELL = 30;
+  COLS = Math.floor(W / CELL);
+  ROWS = Math.floor(H / CELL);
+}
+
+function startGame() {
+  document.getElementById('startScreen').style.display = 'none';
+  document.getElementById('overScreen').style.display = 'none';
+  resize(); buildPath();
+  towers = []; enemies = []; bullets = [];
+  lives = 20; points = 100; wave = 0; waveTimer = 0; selectedType = 'basic';
+  updateUI();
+  cancelAnimationFrame(animId);
+  loop();
+}
+
+function updateUI() {
+  document.getElementById('lives').textContent = lives;
+  document.getElementById('points').textContent = points;
+  document.getElementById('wave').textContent = wave;
+}
+
+function selectTower(type) {
+  selectedType = type;
+  document.querySelectorAll('.build-btn').forEach(b => b.classList.toggle('selected', b.dataset.type === type));
+}
+
+/* 暂停 */
+document.addEventListener('keydown', e => {
+  if ((e.key === 'p' || e.key === 'P' || e.key === 'Escape') && lives > 0) togglePause();
+});
+function togglePause() {
+  paused = !paused;
+  document.getElementById('pauseOverlay').style.display = paused ? 'flex' : 'none';
+  if (!paused) loop();
+}
+
+/* 放置防御模块 */
+canvas.addEventListener('click', handleCanvasClick);
+canvas.addEventListener('touchstart', e => { e.preventDefault(); const t = e.touches[0]; handleCanvasClick({ clientX: t.clientX, clientY: t.clientY }); });
+
+function handleCanvasClick(e) {
+  const rect = canvas.getBoundingClientRect();
+  const cx = Math.floor((e.clientX - rect.left) / CELL);
+  const cy = Math.floor((e.clientY - rect.top) / CELL);
+
+  // 检查是否在路径上
+  if (path.some(p => p.x === cx && p.y === cy)) return;
+  // 检查是否已有塔
+  if (towers.some(t => t.x === cx && t.y === cy)) return;
+
+  const costs = { basic: 20, sniper: 40, splash: 60 };
+  const cost = costs[selectedType];
+  if (points < cost) return;
+
+  points -= cost;
+  const towerData = {
+    basic: { range: 3, damage: 8, rate: 30, color: '#D8A3E0', projColor: '#FFE0E9' },
+    sniper: { range: 5, damage: 25, rate: 60, color: '#A6D1FF', projColor: '#C9E0FF' },
+    splash: { range: 2.5, damage: 15, rate: 45, color: '#FFE0E9', projColor: '#FFB347', splash: true }
+  };
+  const d = towerData[selectedType];
+  towers.push({ x: cx, y: cy, type: selectedType, ...d, cooldown: 0 });
+  updateUI();
+  draw();
+}
+
+/* 生成敌人 */
+function spawnWave() {
+  wave++;
+  updateUI();
+  const count = 4 + wave * 2;
+  const hp = 30 + wave * 15;
+  const speed = 0.8 + wave * 0.1;
+  enemyQueue = [];
+  for (let i = 0; i < count; i++) {
+    enemyQueue.push({
+      delay: i * 30, // 30帧间隔
+      hp, maxHp: hp, speed,
+      color: `hsl(${(wave * 40 + i * 20) % 360}, 60%, 55%)`
+    });
+  }
+  enemySpawnTimer = 0;
+}
+
+/* 主循环 */
+function loop() {
+  if (paused) return;
+  waveTimer++;
+  if (enemies.length === 0 && enemyQueue.length === 0 && waveTimer > 120) { spawnWave(); waveTimer = 0; }
+
+  // 从队列生成敌人
+  if (enemyQueue.length > 0) {
+    enemySpawnTimer++;
+    while (enemyQueue.length > 0 && enemySpawnTimer >= enemyQueue[0].delay) {
+      const spec = enemyQueue.shift();
+      enemies.push({
+        pathIdx: 0, progress: 0,
+        x: path[0].x * CELL + CELL/2,
+        y: path[0].y * CELL + CELL/2,
+        hp: spec.hp, maxHp: spec.maxHp, speed: spec.speed,
+        color: spec.color
+      });
+    }
+  }
+
+  // 更新敌人
+  for (let i = enemies.length - 1; i >= 0; i--) {
+    const e = enemies[i];
+    e.progress += e.speed;
+    if (e.progress >= 1) {
+      e.progress = 0;
+      e.pathIdx++;
+      if (e.pathIdx >= path.length - 1) {
+        lives--;
+        updateUI();
+        enemies.splice(i, 1);
+        if (lives <= 0) { endGame(); return; }
+        continue;
+      }
+    }
+    const curr = path[e.pathIdx], next = path[Math.min(e.pathIdx + 1, path.length - 1)];
+    e.x = (curr.x + (next.x - curr.x) * e.progress) * CELL + CELL/2;
+    e.y = (curr.y + (next.y - curr.y) * e.progress) * CELL + CELL/2;
+  }
+
+  // 更新塔
+  towers.forEach(t => {
+    if (t.cooldown > 0) { t.cooldown--; return; }
+    // 找最近敌人
+    let closest = null, minDist = Infinity;
+    enemies.forEach(e => {
+      const dx = e.x - (t.x * CELL + CELL/2), dy = e.y - (t.y * CELL + CELL/2);
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      if (dist < t.range * CELL && dist < minDist) { minDist = dist; closest = e; }
+    });
+    if (closest) {
+      t.cooldown = t.rate;
+      bullets.push({
+        x: t.x * CELL + CELL/2, y: t.y * CELL + CELL/2,
+        tx: closest.x, ty: closest.y,
+        speed: 5, damage: t.damage, color: t.projColor,
+        splash: t.splash, splashRange: t.splash ? CELL * 1.5 : 0
+      });
+    }
+  });
+
+  // 更新子弹
+  for (let i = bullets.length - 1; i >= 0; i--) {
+    const b = bullets[i];
+    const dx = b.tx - b.x, dy = b.ty - b.y;
+    const dist = Math.sqrt(dx*dx + dy*dy);
+    if (dist < 5) {
+      // 命中
+      if (b.splash) {
+        enemies.forEach(e => {
+          const edx = e.x - b.tx, edy = e.y - b.ty;
+          if (Math.sqrt(edx*edx + edy*edy) < b.splashRange) {
+            e.hp -= b.damage;
+          }
+        });
+      } else {
+        // 找最近敌人伤害
+        let closest = null, minD = Infinity;
+        enemies.forEach(e => {
+          const d = Math.sqrt((e.x-b.tx)**2 + (e.y-b.ty)**2);
+          if (d < minD) { minD = d; closest = e; }
+        });
+        if (closest) closest.hp -= b.damage;
+      }
+      bullets.splice(i, 1);
+    } else {
+      b.x += dx / dist * b.speed;
+      b.y += dy / dist * b.speed;
+    }
+  }
+
+  // 清除死亡敌人
+  enemies = enemies.filter(e => {
+    if (e.hp <= 0) { points += 5; updateUI(); return false; }
+    return true;
+  });
+
+  draw();
+  animId = requestAnimationFrame(loop);
+}
+
+/* 绘制 */
+function draw() {
+  ctx.fillStyle = '#1a1028';
+  ctx.fillRect(0, 0, W, H);
+
+  // 网格
+  ctx.strokeStyle = 'rgba(216,163,224,.05)';
+  for (let x = 0; x <= COLS; x++) { ctx.beginPath(); ctx.moveTo(x*CELL,0); ctx.lineTo(x*CELL,H); ctx.stroke(); }
+  for (let y = 0; y <= ROWS; y++) { ctx.beginPath(); ctx.moveTo(0,y*CELL); ctx.lineTo(W,y*CELL); ctx.stroke(); }
+
+  // 路径
+  ctx.fillStyle = 'rgba(216,163,224,.08)';
+  path.forEach(p => ctx.fillRect(p.x * CELL, p.y * CELL, CELL, CELL));
+  // 路径连线
+  ctx.strokeStyle = 'rgba(216,163,224,.15)';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  path.forEach((p, i) => {
+    const px = p.x * CELL + CELL/2, py = p.y * CELL + CELL/2;
+    if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+  });
+  ctx.stroke();
+
+  // 塔
+  towers.forEach(t => {
+    const tx = t.x * CELL, ty = t.y * CELL;
+    ctx.fillStyle = t.color;
+    ctx.beginPath(); ctx.roundRect(tx + 3, ty + 3, CELL - 6, CELL - 6, 6); ctx.fill();
+    // 范围指示
+    ctx.strokeStyle = 'rgba(216,163,224,.1)';
+    ctx.beginPath(); ctx.arc(tx + CELL/2, ty + CELL/2, t.range * CELL, 0, Math.PI*2); ctx.stroke();
+  });
+
+  // 敌人
+  enemies.forEach(e => {
+    ctx.fillStyle = e.color;
+    ctx.beginPath();
+    ctx.roundRect(e.x - 8, e.y - 8, 16, 16, 4);
+    ctx.fill();
+    // 血条
+    const bw = 16, bh = 3;
+    ctx.fillStyle = 'rgba(0,0,0,.5)';
+    ctx.fillRect(e.x - bw/2, e.y - 14, bw, bh);
+    ctx.fillStyle = e.hp > e.maxHp * 0.3 ? '#A3D9B1' : '#FF6B8A';
+    ctx.fillRect(e.x - bw/2, e.y - 14, bw * (e.hp / e.maxHp), bh);
+  });
+
+  // 子弹
+  bullets.forEach(b => {
+    ctx.fillStyle = b.color;
+    ctx.beginPath(); ctx.arc(b.x, b.y, 3, 0, Math.PI*2); ctx.fill();
+  });
+}
+
+function endGame() {
+  cancelAnimationFrame(animId);
+  document.getElementById('finalWave').textContent = wave;
+  document.getElementById('overScreen').style.display = 'flex';
+}
+</script>
+</body>
+</html>

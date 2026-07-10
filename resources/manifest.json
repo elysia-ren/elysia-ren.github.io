@@ -1,0 +1,12 @@
+[
+  {
+    "id": "example-resource",
+    "name": "示例资源",
+    "description": "这是一个示例资源条目，展示如何添加资源到资源宝库。",
+    "icon": "fas fa-gem",
+    "category": "素材",
+    "type": "link",
+    "url": "#",
+    "tags": ["示例", "模板"]
+  }
+]

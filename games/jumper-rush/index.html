@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+<title>弹力方块跳跃 | 游戏花园</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#1a1028;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100dvh;font-family:'Segoe UI',sans-serif;color:#e8d5f5;overflow:hidden;touch-action:none}
+.top-bar{position:fixed;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:10px 16px;background:rgba(26,16,40,.9);z-index:10}
+.back-btn{background:linear-gradient(135deg,#D8A3E0,#FFE0E9);color:#fff;border:none;border-radius:50px;padding:8px 16px;font-size:.85rem;cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:6px}
+.info{font-size:.95rem;font-weight:600}
+canvas{display:block}
+.overlay{position:fixed;inset:0;background:rgba(26,16,40,.85);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:20;backdrop-filter:blur(6px)}
+.overlay h1{font-size:2rem;margin-bottom:10px;background:linear-gradient(to right,#D8A3E0,#FFE0E9);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.overlay p{color:#b8a5cc;margin-bottom:20px}
+.overlay button{background:linear-gradient(135deg,#D8A3E0,#FFE0E9);color:#fff;border:none;border-radius:50px;padding:14px 36px;font-size:1.1rem;cursor:pointer;font-weight:600}
+</style>
+</head>
+<body>
+<div class="top-bar">
+  <a href="../../games.html" class="back-btn"><i class="fas fa-arrow-left"></i> 返回</a>
+  <div class="info">得分: <span id="score">0</span></div>
+</div>
+<canvas id="gc"></canvas>
+<div class="overlay" id="startScreen">
+  <h1>弹力方块跳跃</h1>
+  <p>点击/空格跳跃 · 踩踏平台上升 · 躲避尖刺</p>
+  <button onclick="startGame()">开始游戏</button>
+</div>
+<div class="overlay" id="overScreen" style="display:none">
+  <h1>游戏结束</h1>
+  <p>高度: <span id="finalScore">0</span></p>
+  <button onclick="startGame()">再来一局</button>
+</div>
+<script>
+/* ========== 弹力方块跳跃 ========== */
+const canvas = document.getElementById('gc');
+const ctx = canvas.getContext('2d');
+// roundRect polyfill
+if (!ctx.roundRect) {
+    CanvasRenderingContext2D.prototype.roundRect = function(x,y,w,h,r) {
+        r = typeof r === 'number' ? r : 0;
+        this.moveTo(x+r,y); this.arcTo(x+w,y,x+w,y+h,r); this.arcTo(x+w,y+h,x,y+h,r);
+        this.arcTo(x,y+h,x,y,r); this.arcTo(x,y,x+w,y,r); this.closePath();
+    };
+}
+let W, H, player, platforms, spikes, score, maxH, alive, camera, animId;
+const GRAVITY = 0.4, JUMP = -10, PLAYER_W = 24;
+
+function resize() {
+  W = Math.min(window.innerWidth, 450);
+  H = Math.min(window.innerHeight - 60, 700);
+  canvas.width = W; canvas.height = H;
+}
+resize();
+window.addEventListener('resize', resize);
+
+/* 生成平台 */
+function generatePlatforms() {
+  platforms = [];
+  spikes = [];
+  // 起始平台
+  platforms.push({ x: W / 2 - 40, y: H - 50, w: 80, h: 12, type: 'normal' });
+  // 向上生成
+  let py = H - 120;
+  while (py > -2000) {
+    const pw = 60 + Math.random() * 40;
+    const px = Math.random() * (W - pw);
+    const rand = Math.random();
+    let type = 'normal';
+    if (rand < 0.1) type = 'moving';
+    else if (rand < 0.18) type = 'fragile';
+    platforms.push({ x: px, y: py, w: pw, h: 12, type, originX: px, dir: 1 });
+
+    // 随机尖刺
+    if (Math.random() < 0.25 && py < H - 200) {
+      spikes.push({
+        x: px + pw / 2 - 8,
+        y: py - 14,
+        w: 16, h: 14
+      });
+    }
+    py -= 50 + Math.random() * 30;
+  }
+}
+
+function startGame() {
+  document.getElementById('startScreen').style.display = 'none';
+  document.getElementById('overScreen').style.display = 'none';
+  resize(); generatePlatforms();
+  player = { x: W / 2 - PLAYER_W / 2, y: H - 80, vx: 0, vy: 0, w: PLAYER_W, h: PLAYER_W };
+  score = 0; maxH = 0; camera = 0; alive = true;
+  document.getElementById('score').textContent = '0';
+  cancelAnimationFrame(animId);
+  loop();
+}
+
+/* 跳跃 */
+function jump() {
+  if (!alive) return;
+  // 只有在下落时才能跳（简单跳跃）
+  if (player.vy > 0) {
+    player.vy = JUMP;
+  }
+}
+
+/* 键盘 */
+document.addEventListener('keydown', e => {
+  if (['Space','ArrowUp','ArrowLeft','ArrowRight','w','a','d'].includes(e.code) || ['w','a','d'].includes(e.key)) e.preventDefault();
+  if (e.code === 'Space' || e.key === 'ArrowUp' || e.key === 'w') { jump(); }
+  if (e.key === 'ArrowLeft' || e.key === 'a') player.vx = -5;
+  if (e.key === 'ArrowRight' || e.key === 'd') player.vx = 5;
+});
+document.addEventListener('keyup', e => {
+  if (['ArrowLeft','a','ArrowRight','d'].includes(e.key)) player.vx = 0;
+});
+
+/* 触屏 */
+canvas.addEventListener('touchstart', e => {
+  e.preventDefault();
+  const tx = e.touches[0].clientX - canvas.getBoundingClientRect().left;
+  if (tx < W / 3) player.vx = -5;
+  else if (tx > W * 2 / 3) player.vx = 5;
+  else jump();
+});
+canvas.addEventListener('touchend', () => { player.vx = 0; });
+
+/* 主循环 */
+function loop() {
+  if (!alive) return;
+
+  // 物理
+  player.vy += GRAVITY;
+  player.x += player.vx;
+  player.y += player.vy;
+
+  // 左右穿墙
+  if (player.x + player.w < 0) player.x = W;
+  if (player.x > W) player.x = -player.w;
+
+  // 移动平台
+  platforms.forEach(p => {
+    if (p.type === 'moving') {
+      p.x += p.dir * 1;
+      if (p.x < 0 || p.x + p.w > W) p.dir *= -1;
+    }
+  });
+
+  // 平台碰撞（只在下落时）
+  if (player.vy > 0) {
+    platforms.forEach(p => {
+      if (player.y + player.h >= p.y && player.y + player.h <= p.y + p.h + 5 &&
+          player.x + player.w > p.x && player.x < p.x + p.w) {
+        if (p.type === 'fragile') {
+          p.broken = true;
+        } else {
+          player.y = p.y - player.h;
+          player.vy = JUMP;
+        }
+      }
+    });
+  }
+
+  // 移除破碎平台
+  platforms = platforms.filter(p => !p.broken);
+
+  // 尖刺碰撞
+  for (const sp of spikes) {
+    if (player.x + player.w > sp.x && player.x < sp.x + sp.w &&
+        player.y + player.h > sp.y && player.y < sp.y + sp.h) {
+      gameOver(); return;
+    }
+  }
+
+  // 相机跟随
+  const targetCam = player.y - H * 0.4;
+  if (targetCam < camera) camera += (targetCam - camera) * 0.1;
+
+  // 掉落检测
+  if (player.y - camera > H + 50) { gameOver(); return; }
+
+  // 得分
+  const height = Math.floor(-(player.y - H + 80) / 10);
+  if (height > maxH) { maxH = height; score = maxH; }
+  document.getElementById('score').textContent = score;
+
+  draw();
+  animId = requestAnimationFrame(loop);
+}
+
+/* 绘制 */
+function draw() {
+  ctx.fillStyle = '#1a1028';
+  ctx.fillRect(0, 0, W, H);
+
+  ctx.save();
+  ctx.translate(0, -camera);
+
+  // 平台
+  platforms.forEach(p => {
+    if (p.y - camera > H + 50 || p.y - camera < -50) return;
+    if (p.type === 'normal') ctx.fillStyle = '#D8A3E0';
+    else if (p.type === 'moving') ctx.fillStyle = '#A6D1FF';
+    else if (p.type === 'fragile') ctx.fillStyle = '#FFB347';
+    ctx.beginPath();
+    ctx.roundRect(p.x, p.y, p.w, p.h, 6);
+    ctx.fill();
+    if (p.type === 'fragile') {
+      // 裂纹效果
+      ctx.strokeStyle = 'rgba(26,16,40,.3)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(p.x + p.w * 0.3, p.y);
+      ctx.lineTo(p.x + p.w * 0.4, p.y + p.h);
+      ctx.moveTo(p.x + p.w * 0.7, p.y);
+      ctx.lineTo(p.x + p.w * 0.6, p.y + p.h);
+      ctx.stroke();
+    }
+  });
+
+  // 尖刺
+  spikes.forEach(sp => {
+    if (sp.y - camera > H + 50 || sp.y - camera < -50) return;
+    ctx.fillStyle = '#FF6B8A';
+    ctx.beginPath();
+    ctx.moveTo(sp.x, sp.y + sp.h);
+    ctx.lineTo(sp.x + sp.w / 2, sp.y);
+    ctx.lineTo(sp.x + sp.w, sp.y + sp.h);
+    ctx.closePath();
+    ctx.fill();
+  });
+
+  // 玩家
+  ctx.fillStyle = '#FFE0E9';
+  ctx.beginPath();
+  ctx.roundRect(player.x, player.y, player.w, player.h, 4);
+  ctx.fill();
+  // 眼睛
+  ctx.fillStyle = '#1a1028';
+  ctx.fillRect(player.x + 5, player.y + 7, 4, 4);
+  ctx.fillRect(player.x + player.w - 9, player.y + 7, 4, 4);
+
+  ctx.restore();
+
+  // 高度指示
+  ctx.fillStyle = 'rgba(216,163,224,.1)';
+  ctx.fillRect(W - 6, 0, 6, H);
+  const indicator = Math.max(0, Math.min(H - 20, (-camera / (platforms.length * 50)) * H));
+  ctx.fillStyle = '#D8A3E0';
+  ctx.fillRect(W - 6, indicator, 6, 20);
+}
+
+function gameOver() {
+  alive = false;
+  cancelAnimationFrame(animId);
+  document.getElementById('finalScore').textContent = score;
+  document.getElementById('overScreen').style.display = 'flex';
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,102 @@
+[
+  {
+    "id": "snake-hunter",
+    "name": "几何贪吃猎手",
+    "description": "操控渐变方块吞噬光点变长，加速道具与缩小陷阱让经典玩法焕发新生。",
+    "icon": "fas fa-worm",
+    "category": "休闲",
+    "url": "games/snake-hunter/index.html",
+    "version": "1.0.0",
+    "author": "Elysia"
+  },
+  {
+    "id": "brick-breaker",
+    "name": "方块破壁者",
+    "description": "挡板反弹小球击碎矩阵色块，普通砖、双倍砖、弹性砖三种玩法。",
+    "icon": "fas fa-cubes",
+    "category": "休闲",
+    "url": "games/brick-breaker/index.html",
+    "version": "1.0.0",
+    "author": "Elysia"
+  },
+  {
+    "id": "merge-matrix",
+    "name": "数字融合方阵",
+    "description": "4×4方格滑动合并相同数值，达成2048即胜利的数字益智挑战。",
+    "icon": "fas fa-th",
+    "category": "益智",
+    "url": "games/merge-matrix/index.html",
+    "version": "1.0.0",
+    "author": "Elysia"
+  },
+  {
+    "id": "asteroid-dodge",
+    "name": "虚空陨石逃生",
+    "description": "驾驶三角飞船在陨石雨中穿梭，收集护盾苟活更久。",
+    "icon": "fas fa-rocket",
+    "category": "动作",
+    "url": "games/asteroid-dodge/index.html",
+    "version": "1.0.0",
+    "author": "Elysia"
+  },
+  {
+    "id": "maze-treasure",
+    "name": "迷宫脉冲寻宝",
+    "description": "算法实时生成迷宫，操控方块寻宝，减速区域与传送门增添变数。",
+    "icon": "fas fa-dungeon",
+    "category": "益智",
+    "url": "games/maze-treasure/index.html",
+    "version": "1.0.0",
+    "author": "Elysia"
+  },
+  {
+    "id": "color-memory",
+    "name": "色彩序列记忆",
+    "description": "观察闪烁色块序列并复刻，关卡递增长度与速度，考验记忆力。",
+    "icon": "fas fa-brain",
+    "category": "益智",
+    "url": "games/color-memory/index.html",
+    "version": "1.0.0",
+    "author": "Elysia"
+  },
+  {
+    "id": "tower-defense",
+    "name": "防线点阵守卫",
+    "description": "放置防御模块阻击巡游者，基础屏障、精准模块、范围模块三种塔型。",
+    "icon": "fas fa-shield-halved",
+    "category": "策略",
+    "url": "games/tower-defense/index.html",
+    "version": "1.0.0",
+    "author": "Elysia"
+  },
+  {
+    "id": "jumper-rush",
+    "name": "弹力方块跳跃",
+    "description": "方块自动向右前进，点击跳跃踩踏浮动平台，躲避尖刺不断攀升。",
+    "icon": "fas fa-arrow-up",
+    "category": "动作",
+    "url": "games/jumper-rush/index.html",
+    "version": "1.0.0",
+    "author": "Elysia"
+  },
+  {
+    "id": "match-magic",
+    "name": "磁力消消方阵",
+    "description": "点击消除相连同色方块，支持斜向相连，限定步数达成目标分数。",
+    "icon": "fas fa-magnet",
+    "category": "休闲",
+    "url": "games/match-magic/index.html",
+    "version": "1.0.0",
+    "author": "Elysia"
+  },
+  {
+    "id": "particle-collector",
+    "name": "航线粒子收集",
+    "description": "操控收集器捕捉蓝色光点，躲避红色危险粒子，轻度休闲适合碎片时间。",
+    "icon": "fas fa-atom",
+    "category": "休闲",
+    "url": "games/particle-collector/index.html",
+    "version": "1.0.0",
+    "author": "Elysia"
+  }
+]
