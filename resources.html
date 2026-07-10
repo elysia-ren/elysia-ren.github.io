@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>资源宝库 | 秘密基地</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="common.css">
+    <style>
+        .category-tabs {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+        .tab {
+            padding: 8px 20px;
+            border-radius: var(--radius-pill);
+            border: 2px solid var(--primary-light);
+            background: transparent;
+            color: var(--text);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .tab:hover, .tab.active {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            border-color: transparent;
+            box-shadow: var(--glow);
+        }
+        .resources-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+        }
+        .resource-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 24px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(235,212,240,0.3);
+            transition: all 0.3s ease;
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+        }
+        .resource-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 35px rgba(168,140,190,0.2);
+        }
+        .resource-icon {
+            width: 50px; height: 50px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-shadow: var(--glow);
+        }
+        .resource-icon i { font-size: 1.3rem; color: white; }
+        .resource-info h3 { font-size: 1.1rem; margin-bottom: 6px; color: var(--text); }
+        .resource-info p { color: var(--text-light); font-size: 0.9rem; line-height: 1.5; }
+        .resource-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+        .resource-tag {
+            background: var(--primary-light);
+            color: var(--primary-dark);
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <a href="index.html" class="logo">
+            <div class="logo-icon"><i class="fas fa-fairy"></i></div>
+            <span>秘密基地</span>
+        </a>
+        <button class="hamburger" aria-label="菜单"><i class="fas fa-bars"></i></button>
+        <div class="nav-links">
+            <a href="index.html"><i class="fas fa-home"></i> 基地首页</a>
+            <a href="explore.html"><i class="fas fa-compass"></i> 妖精工坊</a>
+            <a href="games.html"><i class="fas fa-gamepad"></i> 游戏花园</a>
+            <a href="resources.html" class="active"><i class="fas fa-gem"></i> 资源宝库</a>
+            <div class="volume-control">
+                <button id="volumeBtn" class="volume-icon"><i class="fas fa-music"></i></button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="page-container">
+        <h1 class="section-title" style="margin-top:20px;">资源宝库</h1>
+
+        <!-- 分类标签 -->
+        <div class="category-tabs" id="category-tabs">
+            <button class="tab active" data-cat="all">全部</button>
+        </div>
+
+        <!-- 资源列表 -->
+        <div class="resources-grid" id="resources-grid">
+            <div class="loading"><i class="fas fa-spinner"></i><p>加载中...</p></div>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="copyright">
+            <p>&copy; 2025 粉色妖精小姐的秘密基地 | 梦幻与实用交织的数字乐园</p>
+        </div>
+    </footer>
+
+    <audio id="bgm" loop>
+        <source src="assets/music/致爱 A Song For Beloved - 宴宁_徐鲤.mp3" type="audio/mpeg">
+    </audio>
+    <script src="common.js"></script>
+    <script>
+        const FALLBACK_RESOURCES = [
+            {"id":"example-resource","name":"示例资源","description":"这是一个示例资源条目，展示如何添加资源到资源宝库。","icon":"fas fa-gem","category":"素材","type":"link","url":"#","tags":["示例","模板"]}
+        ];
+
+        let allResources = [];
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            let loaded = await loadManifest('resources/manifest.json');
+            allResources = loaded.length ? loaded : FALLBACK_RESOURCES;
+            buildCategoryTabs(allResources);
+            renderResourceCards(allResources);
+        });
+
+        function buildCategoryTabs(items) {
+            const cats = [...new Set(items.map(r => r.category || '未分类'))];
+            const tabs = document.getElementById('category-tabs');
+            cats.forEach(cat => {
+                const btn = document.createElement('button');
+                btn.className = 'tab';
+                btn.dataset.cat = cat;
+                btn.textContent = cat;
+                btn.addEventListener('click', () => filterByCategory(cat));
+                tabs.appendChild(btn);
+            });
+            tabs.querySelector('[data-cat="all"]').addEventListener('click', () => {
+                setActiveTab('all');
+                renderResourceCards(allResources);
+            });
+        }
+
+        function filterByCategory(cat) {
+            setActiveTab(cat);
+            renderResourceCards(allResources.filter(r => (r.category || '未分类') === cat));
+        }
+
+        function setActiveTab(cat) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.cat === cat));
+        }
+
+        function renderResourceCards(items) {
+            const grid = document.getElementById('resources-grid');
+            renderCards(items, grid, item => `
+                <a href="${item.url || '#'}" class="resource-card" target="_blank">
+                    <div class="resource-icon"><i class="${item.icon || 'fas fa-gem'}"></i></div>
+                    <div class="resource-info">
+                        <h3>${item.name}</h3>
+                        <p>${item.description || ''}</p>
+                        <div class="resource-tags">
+                            ${(item.tags || []).map(t => `<span class="resource-tag">${t}</span>`).join('')}
+                        </div>
+                    </div>
+                </a>
+            `);
+        }
+    </script>
+</body>
+</html>

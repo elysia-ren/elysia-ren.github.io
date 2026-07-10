@@ -3,186 +3,206 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>游戏花园 - 爱莉希雅主题</title>
+    <title>游戏花园 | 秘密基地</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="common.css">
     <style>
-        :root {
-            --primary: #D8A3E0; /* 淡紫色作为主色调 */
-            --primary-light: #EBD4F0; /* 淡紫浅色 */
-            --primary-dark: #B87BC0; /* 淡紫深色 */
-            --secondary: #A6D1FF; /* 浅蓝色作为辅助色 */
-            --secondary-light: #C9E0FF; /* 浅蓝浅色 */
-            --accent: #FFE0E9; /* 弱化的粉色作为点缀 */
-            --glow: 0 0 25px rgba(216, 163, 224, 0.3); /* 淡紫色发光效果 */
+        .category-tabs {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
         }
-        body {
-            background-color: #f8f5fb;
-            color: #5A4B6E;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 20px;
-            position: relative;
-        }
-        .back-button {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: linear-gradient(to right, var(--primary), var(--accent));
-            color: white;
-            border: none;
-            border-radius: 50px;
-            padding: 10px 20px;
-            font-size: 16px;
+        .tab {
+            padding: 8px 20px;
+            border-radius: var(--radius-pill);
+            border: 2px solid var(--primary-light);
+            background: transparent;
+            color: var(--text);
+            font-weight: 600;
             cursor: pointer;
-            box-shadow: var(--glow);
             transition: all 0.3s ease;
-            z-index: 100;
         }
-        .back-button:hover {
-            transform: scale(1.05);
-            background: var(--primary-dark);
-        }
-        .volume-control {
-            position: absolute;
-            top: 20px;
-            right: 140px;
-            z-index: 101;
-        }
-        .volume-icon {
+        .tab:hover, .tab.active {
             background: linear-gradient(135deg, var(--primary), var(--accent));
             color: white;
-            border: none;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
+            border-color: transparent;
             box-shadow: var(--glow);
-            transition: all 0.3s ease;
         }
-        .volume-icon:hover {
-            transform: scale(1.1);
-            background: var(--primary-dark);
-        }
-        .volume-slider-container {
-            position: absolute;
-            top: 50px;
-            right: 0;
-            background: rgba(255,255,255,0.95);
-            padding: 10px;
-            border-radius: 30px;
-            box-shadow: 0 3px 15px rgba(0,0,0,0.1);
-            display: none;
-        }
-        .volume-slider-container.active {
-            display: block;
-        }
-        .volume-slider {
-            width: 120px;
-            margin: 0;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding-top: 60px;
-        }
-        .game-grid {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 24px;
         }
         .game-card {
-            background: white;
-            border-radius: 20px;
-            width: 180px;
-            height: 180px;
-            margin: 15px;
-            box-shadow: 0 5px 15px rgba(90, 75, 110, 0.1);
-            transition: transform 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 30px 20px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(235,212,240,0.3);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            display: block;
+            color: inherit;
         }
         .game-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-6px);
+            box-shadow: 0 15px 40px rgba(168,140,190,0.25);
         }
         .game-icon {
-            font-size: 50px;
-            margin-bottom: 15px;
+            width: 70px; height: 70px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            box-shadow: var(--glow);
+        }
+        .game-icon i {
+            font-size: 1.8rem;
+            color: white;
+        }
+        .game-card h3 {
+            font-size: 1.15rem;
+            margin-bottom: 8px;
+            color: var(--text);
+        }
+        .game-card p {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        .game-meta {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+        .game-tag {
+            background: var(--primary-light);
             color: var(--primary-dark);
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
         }
-        .game-name {
-            font-size: 18px;
-            font-weight: bold;
-            text-align: center;
-            margin: 0;
-        }
-        h1 {
-            color: var(--primary-dark);
-            text-align: center;
-            margin-bottom: 30px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
-        }
-</style>
+    </style>
 </head>
 <body>
-    <button class="back-button" onclick="window.location.href='index.html'">
-        <i class="fas fa-arrow-left"></i> 返回主页
-    </button>
-    <div class="volume-control">
-        <button id="volumeIcon" class="volume-icon">
-            <i class="fas fa-music"></i>
-        </button>
-    </div>
-    <div class="container animate__animated animate__fadeIn">
-        <h1><i class="fas fa-gamepad"></i> 爱莉希雅的游戏花园</h1>
-        <div class="game-grid">
-            <!-- 游戏卡片保持不变 -->
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <a href="index.html" class="logo">
+            <div class="logo-icon"><i class="fas fa-fairy"></i></div>
+            <span>秘密基地</span>
+        </a>
+        <button class="hamburger" aria-label="菜单"><i class="fas fa-bars"></i></button>
+        <div class="nav-links">
+            <a href="index.html"><i class="fas fa-home"></i> 基地首页</a>
+            <a href="explore.html"><i class="fas fa-compass"></i> 妖精工坊</a>
+            <a href="games.html" class="active"><i class="fas fa-gamepad"></i> 游戏花园</a>
+            <a href="resources.html"><i class="fas fa-gem"></i> 资源宝库</a>
+            <div class="volume-control">
+                <button id="volumeBtn" class="volume-icon"><i class="fas fa-music"></i></button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="page-container">
+        <h1 class="section-title" style="margin-top:20px;">游戏花园</h1>
+
+        <!-- 分类标签 -->
+        <div class="category-tabs" id="category-tabs">
+            <button class="tab active" data-cat="all">全部</button>
+        </div>
+
+        <!-- 游戏列表 -->
+        <div class="games-grid" id="games-grid">
+            <div class="loading"><i class="fas fa-spinner"></i><p>加载中...</p></div>
         </div>
     </div>
-    <audio id="backgroundMusic" loop>
-        <source src="致爱 A Song For Beloved - 宴宁_徐鲤.mp3" type="audio/mpeg">
-     </audio>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="copyright">
+            <p>&copy; 2025 粉色妖精小姐的秘密基地 | 梦幻与实用交织的数字乐园</p>
+        </div>
+    </footer>
+
+    <audio id="bgm" loop>
+        <source src="assets/music/致爱 A Song For Beloved - 宴宁_徐鲤.mp3" type="audio/mpeg">
+    </audio>
+    <script src="common.js"></script>
     <script>
-        const audio = document.getElementById('backgroundMusic');
-        const volumeIcon = document.getElementById('volumeIcon');
-    
-        function loadVolumeSettings() {
-            const isMuted = localStorage.getItem('bgmMuted') === 'true';
-            audio.muted = isMuted;
-            updateVolumeIcon(isMuted);
+        /* 内嵌游戏清单（fetch 失败时兜底，新增游戏需同步更新此处） */
+        const FALLBACK_GAMES = [
+            {"id":"snake-hunter","name":"几何贪吃猎手","description":"操控渐变方块吞噬光点变长，加速道具与缩小陷阱让经典玩法焕发新生。","icon":"fas fa-worm","category":"休闲","url":"games/snake-hunter/index.html","version":"1.0.0"},
+            {"id":"brick-breaker","name":"方块破壁者","description":"挡板反弹小球击碎矩阵色块，普通砖、双倍砖、弹性砖三种玩法。","icon":"fas fa-cubes","category":"休闲","url":"games/brick-breaker/index.html","version":"1.0.0"},
+            {"id":"merge-matrix","name":"数字融合方阵","description":"4×4方格滑动合并相同数值，达成2048即胜利的数字益智挑战。","icon":"fas fa-th","category":"益智","url":"games/merge-matrix/index.html","version":"1.0.0"},
+            {"id":"asteroid-dodge","name":"虚空陨石逃生","description":"驾驶三角飞船在陨石雨中穿梭，收集护盾苟活更久。","icon":"fas fa-rocket","category":"动作","url":"games/asteroid-dodge/index.html","version":"1.0.0"},
+            {"id":"maze-treasure","name":"迷宫脉冲寻宝","description":"算法实时生成迷宫，操控方块寻宝，减速区域与传送门增添变数。","icon":"fas fa-dungeon","category":"益智","url":"games/maze-treasure/index.html","version":"1.0.0"},
+            {"id":"color-memory","name":"色彩序列记忆","description":"观察闪烁色块序列并复刻，关卡递增长度与速度，考验记忆力。","icon":"fas fa-brain","category":"益智","url":"games/color-memory/index.html","version":"1.0.0"},
+            {"id":"tower-defense","name":"防线点阵守卫","description":"放置防御模块阻击巡游者，基础屏障、精准模块、范围模块三种塔型。","icon":"fas fa-shield-halved","category":"策略","url":"games/tower-defense/index.html","version":"1.0.0"},
+            {"id":"jumper-rush","name":"弹力方块跳跃","description":"方块自动向右前进，点击跳跃踩踏浮动平台，躲避尖刺不断攀升。","icon":"fas fa-arrow-up","category":"动作","url":"games/jumper-rush/index.html","version":"1.0.0"},
+            {"id":"match-magic","name":"磁力消消方阵","description":"点击消除相连同色方块，支持斜向相连，限定步数达成目标分数。","icon":"fas fa-magnet","category":"休闲","url":"games/match-magic/index.html","version":"1.0.0"},
+            {"id":"particle-collector","name":"航线粒子收集","description":"操控收集器捕捉蓝色光点，躲避红色危险粒子，轻度休闲适合碎片时间。","icon":"fas fa-atom","category":"休闲","url":"games/particle-collector/index.html","version":"1.0.0"}
+        ];
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            let loaded = await loadManifest('games/manifest.json');
+            allGames = loaded.length ? loaded : FALLBACK_GAMES;
+            buildCategoryTabs(allGames);
+            renderGameCards(allGames);
+        });
+
+        function buildCategoryTabs(games) {
+            const cats = [...new Set(games.map(g => g.category || '未分类'))];
+            const tabs = document.getElementById('category-tabs');
+            cats.forEach(cat => {
+                const btn = document.createElement('button');
+                btn.className = 'tab';
+                btn.dataset.cat = cat;
+                btn.textContent = cat;
+                btn.addEventListener('click', () => filterByCategory(cat));
+                tabs.appendChild(btn);
+            });
+            // 绑定"全部"
+            tabs.querySelector('[data-cat="all"]').addEventListener('click', () => {
+                setActiveTab('all');
+                renderGameCards(allGames);
+            });
         }
-    
-        function updateVolumeIcon(isMuted) {
-            const icon = volumeIcon.querySelector('i');
-            icon.className = isMuted ? 'fas fa-volume-mute' : 'fas fa-music';
+
+        function filterByCategory(cat) {
+            setActiveTab(cat);
+            const filtered = allGames.filter(g => (g.category || '未分类') === cat);
+            renderGameCards(filtered);
         }
-    
-        volumeIcon.addEventListener('click', () => {
-            audio.muted = !audio.muted;
-            localStorage.setItem('bgmMuted', audio.muted);
-            updateVolumeIcon(audio.muted);
-        });
-    
-        window.addEventListener('storage', (e) => {
-            if (e.key === 'bgmMuted') {
-                audio.muted = e.newValue === 'true';
-                updateVolumeIcon(audio.muted);
-            }
-        });
-    
-        loadVolumeSettings();
-        audio.play().catch(e => {
-            console.log('自动播放失败，等待用户交互后播放:', e);
-            window.addEventListener('click', () => {
-                if (audio.paused) audio.play();
-            }, { once: true });
-        });
+
+        function setActiveTab(cat) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.cat === cat));
+        }
+
+        function renderGameCards(games) {
+            const grid = document.getElementById('games-grid');
+            renderCards(games, grid, game => `
+                <a href="${game.url}" class="game-card" target="_blank">
+                    <div class="game-icon"><i class="${game.icon || 'fas fa-gamepad'}"></i></div>
+                    <h3>${game.name}</h3>
+                    <p>${game.description || ''}</p>
+                    <div class="game-meta">
+                        <span class="game-tag">${game.category || '未分类'}</span>
+                        ${game.version ? `<span class="game-tag">v${game.version}</span>` : ''}
+                    </div>
+                </a>
+            `);
+        }
     </script>
 </body>
 </html>

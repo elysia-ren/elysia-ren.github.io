@@ -4,497 +4,83 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>粉色妖精小姐的秘密基地 | Elysia</title>
-    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="common.css">
     <style>
-        :root {
-            --primary: #D8A3E0; /* 淡紫色作为主色调 */
-            --primary-light: #EBD4F0; /* 淡紫浅色 */
-            --primary-dark: #B87BC0; /* 淡紫深色 */
-            --secondary: #A6D1FF; /* 浅蓝色作为辅助色 */
-            --secondary-light: #C9E0FF; /* 浅蓝浅色 */
-            --accent: #FFE0E9; /* 弱化的粉色作为点缀 */
-            --background: #f8f5fb; /* 更浅的背景色 */
-            --card-bg: rgba(255, 255, 255, 0.85);
-            --text: #5A4B6E; /* 偏紫的文字色 */
-            --text-light: #8A7B99; /* 浅紫色文字 */
-            --success: #A3D9B1; /* 淡绿色保持不变 */
-            --shadow: 0 10px 30px rgba(168, 140, 190, 0.15); /* 调整阴影色调 */
-            --glow: 0 0 25px rgba(216, 163, 224, 0.3); /* 淡紫色发光效果 */
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Quicksand', sans-serif;
-            background: var(--background);
-            color: var(--text);
-            overflow-x: hidden;
-            position: relative;
-            min-height: 100vh;
-            background-image: 
-                radial-gradient(circle at 10% 20%, rgba(216, 163, 224, 0.08) 0%, transparent 25%),
-                radial-gradient(circle at 90% 80%, rgba(166, 227, 255, 0.08) 0%, transparent 25%);
-        }
-
-        /* 花瓣飘落背景（修改为淡紫色） */
-        .petal-fall {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: -1;
-            overflow: hidden;
-        }
-
-        .petal {
-            position: absolute;
-            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M50,15 C58,15 65,18 70,23 C75,28 78,35 78,43 C78,51 75,58 70,63 C65,68 58,71 50,71 C42,71 35,68 30,63 C25,58 22,51 22,43 C22,35 25,28 30,23 C35,18 42,15 50,15 Z" fill="%23EBD4F0"/></svg>');
-            background-size: contain;
-            background-repeat: no-repeat;
-            width: 30px;
-            height: 30px;
-            opacity: 0.7;
-            animation: fall linear infinite;
-        }
-
-        /* 导航栏 */
-        .navbar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            padding: 20px 5%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 100;
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(10px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            border-bottom: 1px solid rgba(235, 212, 240, 0.2);
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--text);
-            font-family: 'Quicksand', sans-serif;
-        }
-
-        .logo-icon {
-            width: 45px;
-            height: 45px;
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            overflow: hidden;
-            box-shadow: var(--glow);
-        }
-
-        .logo-icon::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle, rgba(255,255,255,0.4) 0%, transparent 70%);
-            animation: rotate 8s linear infinite;
-        }
-
-        .logo-icon i {
-            color: white;
-            font-size: 1.4rem;
-            animation: pulse 2s infinite alternate;
-        }
-
-        .nav-links {
-            display: flex;
+        .features { padding: 0 5% 60px; max-width: 1200px; margin: 0 auto; }
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 30px;
         }
-
-        .nav-links a {
-            text-decoration: none;
-            color: var(--text);
-            font-weight: 600;
-            font-size: 1.1rem;
-            padding: 8px 15px;
-            border-radius: 30px;
-            transition: all 0.3s ease;
-            position: relative;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .nav-links a::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 0;
-            height: 2px;
-            background: linear-gradient(to right, var(--primary), var(--accent));
-            transition: width 0.3s ease;
-        }
-
-        .nav-links a:hover {
-            color: var(--primary-dark);
-        }
-
-        .nav-links a:hover::after {
-            width: 70%;
-        }
-
-        .nav-links a.active {
-            background: linear-gradient(to right, var(--primary), var(--accent));
-            color: white;
-            box-shadow: var(--glow);
-        }
-
-        /* 音量控制样式 */
-        .volume-control {
-            position: relative;
-            display: flex;
-            align-items: center;
-        }
-        .volume-icon {
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: var(--glow);
-            transition: all 0.3s ease;
-            z-index: 102;
-        }
-
-        /* 主内容区 */
-        .hero {
-            padding: 160px 5% 100px;
-            text-align: center;
-            max-width: 1200px;
-            margin: 0 auto;
-            position: relative;
-            z-index: 10;
-        }
-
-        .hero h1 {
-            font-size: 3.8rem;
-            font-weight: 700;
-            margin-bottom: 20px;
-            background: linear-gradient(to right, var(--primary), var(--accent));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-family: 'Quicksand', sans-serif;
-            position: relative;
-            display: inline-block;
-            text-shadow: 0 5px 15px rgba(216, 163, 224, 0.2);
-        }
-
-        .hero h1::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 180px;
-            height: 5px;
-            background: linear-gradient(to right, var(--primary), var(--accent));
-            border-radius: 3px;
-            box-shadow: var(--glow);
-        }
-
-        .btn {
-            padding: 18px 45px;
-            border-radius: 50px;
-            font-size: 1.2rem;
-            font-weight: 600;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 12px;
-            cursor: pointer;
-            border: none;
-            position: relative;
-            overflow: hidden;
-            box-shadow: var(--shadow);
-            z-index: 1;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            color: white;
-        }
-
-        .btn:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(216, 163, 224, 0.4);
-        }
-
-        /* 功能卡片区 */
-        .section-title::after {
-            content: '';
-            position: absolute;
-            bottom: -20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100px;
-            height: 4px;
-            background: linear-gradient(to right, var(--primary), var(--accent));
-            border-radius: 2px;
-            box-shadow: var(--glow);
-        }
-
-        .card::before {
-            content: '';
-            position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            background: linear-gradient(45deg, var(--primary), var(--secondary), var(--accent));
-            z-index: -1;
-            border-radius: 27px;
-            animation: borderRotate 6s linear infinite;
-            background-size: 400%;
-        }
-
-        .card-icon {
-            width: 100px;
-            height: 100px;
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 40px auto 30px;
-            position: relative;
-            overflow: hidden;
-            box-shadow: var(--glow);
-        }
-
-        .card h3 {
-            font-size: 2rem;
-            margin-bottom: 25px;
-            color: var(--text);
-            font-family: 'Quicksand', sans-serif;
-            background: linear-gradient(to right, var(--primary), var(--accent));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .card-btn {
-            display: inline-block;
-            padding: 14px 35px;
-            background: transparent;
-            color: var(--primary-dark);
-            border: 2px solid var(--primary);
-            border-radius: 30px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            font-size: 1.1rem;
-        }
-
-        .card-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            z-index: -1;
-            transition: transform 0.5s ease;
-            transform: scaleX(0);
-            transform-origin: right;
-        }
-
-        /* 页脚 */
-        .footer {
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(10px);
-            padding: 60px 5% 30px;
-            border-top: 1px solid rgba(235, 212, 240, 0.3);
-            margin-top: 100px;
-        }
-
-        .footer-links h4 {
-            font-size: 1.4rem;
-            margin-bottom: 25px;
-            color: var(--text);
-            font-family: 'Quicksand', sans-serif;
-            background: linear-gradient(to right, var(--primary), var(--accent));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .footer-links a:hover {
-            color: var(--primary);
-        }
-
-        .social-icon {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: var(--primary-light);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--primary-dark);
-            transition: all 0.3s ease;
-            font-size: 1.4rem;
-            box-shadow: var(--shadow);
-        }
-
-        .social-icon:hover {
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            color: white;
-            transform: translateY(-5px);
-            box-shadow: var(--glow);
-        }
-
-        /* 动画 */
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-15px); }
-            100% { transform: translateY(0px); }
-        }
-
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        @keyframes borderRotate {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            100% { transform: scale(1.1); }
-        }
-
-        @keyframes fall {
-            to {
-                transform: translateY(100vh) rotate(360deg);
-            }
-        }
-
-        /* 响应式设计 */
-        @media (max-width: 992px) {
-            .hero h1 { font-size: 3.2rem; }
-            .section-title { font-size: 2.4rem; }
-            .cards-container { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
-        }
-
-        @media (max-width: 768px) {
-            .navbar { padding: 15px 5%; }
-            .nav-links { gap: 15px; }
-            .nav-links a { font-size: 0.95rem; padding: 6px 12px; }
-            .hero { padding: 140px 5% 80px; }
-            .hero h1 { font-size: 2.7rem; }
-            .hero p { font-size: 1.2rem; }
-            .cta-buttons { flex-direction: column; align-items: center; gap: 20px; }
-            .btn { width: 100%; max-width: 320px; justify-content: center; }
-            .section-title { font-size: 2.2rem; }
-            .footer-links { flex-wrap: wrap; gap: 40px; }
-        }
-
-        @media (max-width: 576px) {
-            .logo { font-size: 1.6rem; }
-            .logo-icon { width: 40px; height: 40px; }
-            .hero { padding: 120px 5% 60px; }
-            .hero h1 { font-size: 2.2rem; }
-            .hero p { font-size: 1.1rem; }
-            .card-icon { width: 85px; height: 85px; }
-            .card h3 { font-size: 1.7rem; }
-            .footer-content { flex-direction: column; }
-            .footer-links { width: 100%; }
-        }
+        .card { text-align: center; }
     </style>
 </head>
 <body>
-    <!-- 花瓣飘落背景 -->
-    <div class="petal-fall" id="petal-container"></div>
-
     <!-- 导航栏 -->
     <nav class="navbar">
-        <div class="logo">
-            <div class="logo-icon">
-                <i class="fas fa-fairy"></i>
-            </div>
+        <a href="index.html" class="logo">
+            <div class="logo-icon"><i class="fas fa-fairy"></i></div>
             <span>秘密基地</span>
-        </div>
+        </a>
+        <button class="hamburger" aria-label="菜单"><i class="fas fa-bars"></i></button>
         <div class="nav-links">
             <a href="index.html" class="active"><i class="fas fa-home"></i> 基地首页</a>
             <a href="explore.html"><i class="fas fa-compass"></i> 妖精工坊</a>
             <a href="games.html"><i class="fas fa-gamepad"></i> 游戏花园</a>
-            <a href="#"><i class="fas fa-heart"></i> 资源宝库</a>
-            <!-- 音量控制按钮 -->
+            <a href="resources.html"><i class="fas fa-gem"></i> 资源宝库</a>
             <div class="volume-control">
-                <button id="volumeIcon" class="volume-icon">
-                    <i class="fas fa-music"></i>
-                </button>
+                <button id="volumeBtn" class="volume-icon"><i class="fas fa-music"></i></button>
             </div>
         </div>
     </nav>
 
     <!-- 主内容区 -->
-    <section class="hero">
-        <h1 class="animate__animated animate__fadeInDown">粉色妖精小姐的秘密基地</h1>
-        <p class="animate__animated animate__fadeIn animate__delay-1s">欢迎来到梦幻的乐园，这里集合了实用工具与趣味游戏，让您的生活如花般绚丽绽放</p>
-        
-        <div class="cta-buttons animate__animated animate__fadeInUp animate__delay-2s">
+    <section class="hero animate__animated animate__fadeIn">
+        <h1>粉色妖精小姐的秘密基地</h1>
+        <p>欢迎来到梦幻的乐园，这里集合了实用工具与趣味游戏，让您的生活如花般绚丽绽放</p>
+        <div style="display:flex; gap:16px; justify-content:center; flex-wrap:wrap;">
             <a href="explore.html" class="btn btn-primary">
                 <i class="fas fa-feather-alt"></i> 探索永世乐土
+            </a>
+            <a href="games.html" class="btn btn-outline">
+                <i class="fas fa-gamepad"></i> 进入游戏花园
             </a>
         </div>
     </section>
 
     <!-- 功能卡片区 -->
     <section class="features">
-        <h2 class="section-title animate__animated animate__fadeIn">基地<span>功能区</span></h2>
-        
-        <div class="cards-container">
-            <!-- 工具库卡片 -->
-            <div class="card animate__animated animate__fadeInLeft">
-                <div class="card-icon">
-                    <i class="fas fa-wand-magic-sparkles"></i>
-                </div>
-                <div class="card-content">
-                    <h3>妖精工坊</h3>
-                    <p>精心打造的实用工具集合：数据转换、格式处理、加密解密等，让您的工作如魔法般轻松完成</p>
-                    <a href="explore.html" class="card-btn">
-                        <i class="fas fa-hat-wizard"></i> 施展魔法
-                    </a>
-                </div>
+        <h2 class="section-title">基地<span>功能区</span></h2>
+        <div class="cards-container" id="feature-cards">
+            <!-- 妖精工坊 -->
+            <div class="card">
+                <div class="card-icon"><i class="fas fa-wand-magic-sparkles"></i></div>
+                <h3>妖精工坊</h3>
+                <p>精心打造的实用工具集合：数据转换、格式处理、编码解码等，让您的工作如魔法般轻松完成</p>
+                <a href="explore.html" class="card-btn">
+                    <i class="fas fa-hat-wizard"></i> 施展魔法
+                </a>
+            </div>
+            <!-- 游戏花园 -->
+            <div class="card">
+                <div class="card-icon"><i class="fas fa-gamepad"></i></div>
+                <h3>游戏花园</h3>
+                <p>轻松有趣的小游戏合集，在忙碌之余享受片刻欢乐，释放压力找回童心</p>
+                <a href="games.html" class="card-btn">
+                    <i class="fas fa-play"></i> 开始游戏
+                </a>
+            </div>
+            <!-- 资源宝库 -->
+            <div class="card">
+                <div class="card-icon"><i class="fas fa-gem"></i></div>
+                <h3>资源宝库</h3>
+                <p>精选实用资源与素材合集，壁纸、图标、工具链接等，一键获取所需资源</p>
+                <a href="resources.html" class="card-btn">
+                    <i class="fas fa-search"></i> 探索宝库
+                </a>
             </div>
         </div>
     </section>
@@ -502,22 +88,16 @@
     <!-- 页脚 -->
     <footer class="footer">
         <div class="footer-content">
-            <div class="footer-logo">
+            <div class="footer-brand">
                 <div class="logo">
-                    <div class="logo-icon">
-                        <i class="fas fa-fairy"></i>
-                    </div>
+                    <div class="logo-icon"><i class="fas fa-fairy"></i></div>
                     <span>粉色妖精小姐的秘密基地</span>
                 </div>
                 <p>一个融合梦幻设计与实用功能的乐园，为您提供便捷工具和休闲游戏，让数字生活如花瓣般绚烂</p>
                 <div class="social-links">
-                    <a href="explore.html" class="social-icon"><i class="fab fa-github"></i></a>
-                    <a href="explore.html" class="social-icon"><i class="fab fa-twitter"></i></a>
-                    <a href="explore.html" class="social-icon"><i class="fab fa-discord"></i></a>
-                    <a href="explore.html" class="social-icon"><i class="fab fa-pinterest"></i></a>
+                    <a href="https://github.com/elysia-ren" class="social-icon" target="_blank"><i class="fab fa-github"></i></a>
                 </div>
             </div>
-            
             <div class="footer-links">
                 <div>
                     <h4>基地地图</h4>
@@ -525,103 +105,26 @@
                         <li><a href="index.html"><i class="fas fa-feather"></i> 基地首页</a></li>
                         <li><a href="explore.html"><i class="fas fa-wand-magic-sparkles"></i> 妖精工坊</a></li>
                         <li><a href="games.html"><i class="fas fa-gamepad"></i> 游戏花园</a></li>
-                        <li><a href="explore.html"><i class="fas fa-gem"></i> 资源宝库</a></li>
+                        <li><a href="resources.html"><i class="fas fa-gem"></i> 资源宝库</a></li>
                     </ul>
                 </div>
-                
                 <div>
-                    <h4>访客指南</h4>
+                    <h4>项目</h4>
                     <ul>
-                        <li><a href="explore.html"><i class="fas fa-question-circle"></i> 基地守则</a></li>
-                        <li><a href="explore.html"><i class="fas fa-comments"></i> 访客留言</a></li>
-                        <li><a href="explore.html"><i class="fas fa-envelope"></i> 联系妖精</a></li>
-                        <li><a href="explore.html"><i class="fas fa-lightbulb"></i> 创意投稿</a></li>
+                        <li><a href="https://github.com/elysia-ren/elysia-ren.github.io" target="_blank"><i class="fab fa-github"></i> 源码仓库</a></li>
+                        <li><a href="API.md" target="_blank"><i class="fas fa-book"></i> 接口文档</a></li>
                     </ul>
                 </div>
             </div>
         </div>
-        
         <div class="copyright">
             <p>&copy; 2025 粉色妖精小姐的秘密基地 | 梦幻与实用交织的数字乐园</p>
         </div>
     </footer>
 
-    <script>
-        // 创建花瓣飘落效果
-        document.addEventListener('DOMContentLoaded', function() {
-            const petalContainer = document.getElementById('petal-container');
-            const petalCount = window.innerWidth < 768 ? 10 : 25;
-            
-            for (let i = 0; i < petalCount; i++) {
-                const petal = document.createElement('div');
-                petal.className = 'petal';
-                
-                const size = Math.random() * 20 + 10;
-                const left = Math.random() * 100;
-                petal.style.width = `${size}px`;
-                petal.style.height = `${size}px`;
-                petal.style.left = `${left}vw`;
-                petal.style.animationDuration = `${Math.random() * 10 + 10}s`;
-                petal.style.animationDelay = `${Math.random() * 10}s`;
-                
-                petalContainer.appendChild(petal);
-            }
-
-            // 滚动动画
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('animate__fadeIn');
-                    }
-                });
-            }, { threshold: 0.1 });
-            
-            document.querySelectorAll('.card, .section-title').forEach(el => {
-                observer.observe(el);
-            });
-        });
-    </script>
-
-    <!-- 背景音乐和音量控制 -->
-    <audio id="backgroundMusic" loop>
-        <source src="致爱 A Song For Beloved - 宴宁_徐鲤.mp3" type="audio/mpeg">
+    <audio id="bgm" loop>
+        <source src="assets/music/致爱 A Song For Beloved - 宴宁_徐鲤.mp3" type="audio/mpeg">
     </audio>
-
-    <script>
-        const audio = document.getElementById('backgroundMusic');
-        const volumeIcon = document.getElementById('volumeIcon');
-    
-        function loadVolumeSettings() {
-            const isMuted = localStorage.getItem('bgmMuted') === 'true';
-            audio.muted = isMuted;
-            updateVolumeIcon(isMuted);
-        }
-    
-        function updateVolumeIcon(isMuted) {
-            const icon = volumeIcon.querySelector('i');
-            icon.className = isMuted ? 'fas fa-volume-mute' : 'fas fa-music';
-        }
-    
-        volumeIcon.addEventListener('click', () => {
-            audio.muted = !audio.muted;
-            localStorage.setItem('bgmMuted', audio.muted);
-            updateVolumeIcon(audio.muted);
-        });
-    
-        window.addEventListener('storage', (e) => {
-            if (e.key === 'bgmMuted') {
-                audio.muted = e.newValue === 'true';
-                updateVolumeIcon(audio.muted);
-            }
-        });
-    
-        loadVolumeSettings();
-        audio.play().catch(e => {
-            console.log('自动播放失败，等待用户交互后播放:', e);
-            window.addEventListener('click', () => {
-                if (audio.paused) audio.play();
-            }, { once: true });
-        });
-    </script>
+    <script src="common.js"></script>
 </body>
 </html>
