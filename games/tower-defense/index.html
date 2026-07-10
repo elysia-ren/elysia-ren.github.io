@@ -108,7 +108,7 @@ function startGame() {
   document.getElementById('overScreen').style.display = 'none';
   resize(); buildPath();
   towers = []; enemies = []; bullets = [];
-  lives = 20; points = 100; wave = 0; waveTimer = 0; selectedType = 'basic';
+  lives = 20; points = 150; wave = 0; waveTimer = 0; selectedType = 'basic';
   updateUI();
   cancelAnimationFrame(animId);
   loop();
@@ -155,9 +155,9 @@ function handleCanvasClick(e) {
 
   points -= cost;
   const towerData = {
-    basic: { range: 3, damage: 8, rate: 30, color: '#D8A3E0', projColor: '#FFE0E9' },
-    sniper: { range: 5, damage: 25, rate: 60, color: '#A6D1FF', projColor: '#C9E0FF' },
-    splash: { range: 2.5, damage: 15, rate: 45, color: '#FFE0E9', projColor: '#FFB347', splash: true }
+    basic: { range: 3, damage: 10, rate: 25, color: '#D8A3E0', projColor: '#FFE0E9' },
+    sniper: { range: 5, damage: 35, rate: 50, color: '#A6D1FF', projColor: '#C9E0FF' },
+    splash: { range: 2.5, damage: 18, rate: 40, color: '#FFE0E9', projColor: '#FFB347', splash: true }
   };
   const d = towerData[selectedType];
   towers.push({ x: cx, y: cy, type: selectedType, ...d, cooldown: 0 });
@@ -169,13 +169,13 @@ function handleCanvasClick(e) {
 function spawnWave() {
   wave++;
   updateUI();
-  const count = 4 + wave * 2;
-  const hp = 30 + wave * 15;
-  const speed = 0.8 + wave * 0.1;
+  const count = 3 + wave;
+  const hp = 30 + wave * 8;
+  const speed = 0.15 + wave * 0.02;
   enemyQueue = [];
   for (let i = 0; i < count; i++) {
     enemyQueue.push({
-      delay: i * 30, // 30帧间隔
+      delay: i * 45, // 45帧间隔（0.75秒）
       hp, maxHp: hp, speed,
       color: `hsl(${(wave * 40 + i * 20) % 360}, 60%, 55%)`
     });
@@ -277,7 +277,7 @@ function loop() {
 
   // 清除死亡敌人
   enemies = enemies.filter(e => {
-    if (e.hp <= 0) { points += 5; updateUI(); return false; }
+    if (e.hp <= 0) { points += 10; updateUI(); return false; }
     return true;
   });
 

@@ -172,7 +172,7 @@ function tick() {
     addEffect(food[0] * CELL + CELL/2, food[1] * CELL + CELL/2, '#FFE0E9');
     spawnFood();
     // 加速
-    if (speed > 60) { speed -= 2; clearInterval(timer); timer = setInterval(tick, speed); }
+    if (speed > 80) { speed -= 1; clearInterval(timer); timer = setInterval(tick, speed); }
   } else {
     snake.pop();
   }
@@ -269,7 +269,7 @@ function startGame() {
   resize();
   snake = [[Math.floor(COLS/2), Math.floor(ROWS/2)]];
   dir = [1, 0]; nextDir = [1, 0];
-  score = 0; speed = 140; alive = true; bonus = null; effects = [];
+  score = 0; speed = 200; alive = true; bonus = null; effects = [];
   document.getElementById('score').textContent = '0';
   spawnFood();
   draw();
