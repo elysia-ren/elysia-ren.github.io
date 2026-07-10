@@ -106,7 +106,7 @@ function spawnAsteroid() {
   asteroids.push({
     x: r + Math.random() * (W - r * 2),
     y: -r * 2,
-    r, speed: 1.5 + Math.random() * difficulty * 0.8,
+    r, speed: 1.2 + Math.random() * difficulty * 0.5,
     rot: 0, rotSpeed: (Math.random() - 0.5) * 0.05
   });
 }
@@ -126,12 +126,13 @@ function loop() {
   if (!alive || paused) return;
   frame++;
 
-  // 难度递增
-  difficulty = 1 + frame / 600;
+  // 难度递增（缓慢曲线，2分钟后难度约2.0）
+  difficulty = 1 + frame / 3600;
 
-  // 生成
-  if (frame % Math.max(15, 40 - Math.floor(difficulty * 5)) === 0) spawnAsteroid();
-  if (frame % 180 === 0) spawnPickup();
+  // 生成（间隔从40帧逐渐降到18帧，约每0.3秒一颗）
+  if (frame % Math.max(18, 40 - Math.floor(difficulty * 4)) === 0) spawnAsteroid();
+  // 护盾拾取（每2秒一颗）
+  if (frame % 120 === 0) spawnPickup();
 
   // 更新玩家
   player.vx = moveDir * player.speed;
@@ -167,9 +168,9 @@ function loop() {
     }
   }
 
-  // 得分
-  if (frame % 10 === 0) {
-    score = Math.floor(frame / 10);
+  // 得分（每0.5秒+1分）
+  if (frame % 30 === 0) {
+    score = Math.floor(frame / 30);
     document.getElementById('score').textContent = score;
   }
 
