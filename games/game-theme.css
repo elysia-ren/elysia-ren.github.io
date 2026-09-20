@@ -28,10 +28,10 @@ body::before{
   pointer-events:none;
 }
 .top-bar{
-  background:rgba(252,249,246,.88) !important;
-  border-bottom:1px solid rgba(157,97,126,.10);
-  box-shadow:0 8px 24px rgba(105,78,91,.06);
-  backdrop-filter:blur(14px);
+  background:transparent !important;
+  border-bottom:none !important;
+  box-shadow:none !important;
+  backdrop-filter:none !important;
   color:var(--game-ink) !important;
 }
 .back-btn{
@@ -95,4 +95,14 @@ canvas{
   background:linear-gradient(135deg,var(--game-rose),#d7b4c4) !important;
   color:#fff !important;
   box-shadow:0 12px 24px rgba(157,97,126,.16);
+}
+
+/* Floating game chrome: no full-width color strip */
+.top-bar .info,.top-bar .score-box{
+  padding:6px 11px;
+  border:1px solid rgba(157,97,126,.12);
+  border-radius:999px;
+  background:rgba(252,249,246,.72);
+  box-shadow:0 8px 18px rgba(101,76,89,.06);
+  backdrop-filter:blur(10px);
 }
