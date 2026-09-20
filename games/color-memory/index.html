@@ -23,6 +23,7 @@ body{background:#1a1028;display:flex;flex-direction:column;align-items:center;ju
 .overlay button{background:linear-gradient(135deg,#D8A3E0,#FFE0E9);color:#fff;border:none;border-radius:50px;padding:14px 36px;font-size:1.1rem;cursor:pointer;font-weight:600}
 @media(max-width:400px){.cell{width:75px;height:75px}}
 </style>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23faf7f3'/%3E%3Cpath d='M19 15h27v6H25v10h18v6H25v12h21v-6H32V37h15v-6H25V21h21v-6z' fill='%23a66c86'/%3E%3Cpath d='M19 47h27' stroke='%23d9c29a' stroke-width='2'/%3E%3C/svg%3E">
 </head>
 <body>
 <div class="top-bar">
@@ -52,7 +53,7 @@ const COLORS = [
 ];
 const grid = document.getElementById('grid');
 const msg = document.getElementById('msg');
-let sequence, userInput, level, misses, accepting, cells;
+let sequence, userInput, level, misses, accepting, cells, gameToken = 0;
 
 /* 初始化网格 */
 function initGrid() {
@@ -71,28 +72,32 @@ function initGrid() {
 }
 
 function startGame() {
+  const token = ++gameToken;
   document.getElementById('startScreen').style.display = 'none';
   document.getElementById('overScreen').style.display = 'none';
   initGrid();
   sequence = []; level = 1; misses = 0; accepting = false;
   document.getElementById('level').textContent = '1';
   document.getElementById('misses').textContent = '0';
-  nextRound();
+  nextRound(token);
 }
 
-function nextRound() {
+function nextRound(token = gameToken) {
+  if (token !== gameToken) return;
   accepting = false;
   userInput = [];
   // 添加新的随机颜色
   sequence.push(Math.floor(Math.random() * 9));
   msg.textContent = `观察序列 (${sequence.length} 步)...`;
-  playSequence();
+  playSequence(token);
 }
 
 /* 播放序列 */
-async function playSequence() {
+async function playSequence(token = gameToken) {
   await sleep(500);
+  if (token !== gameToken) return;
   for (let i = 0; i < sequence.length; i++) {
+    if (token !== gameToken) return;
     const idx = sequence[i];
     cells[idx].classList.add('active');
     await sleep(400 - Math.min(level * 10, 200));
@@ -120,7 +125,7 @@ function onCellClick(idx) {
       msg.textContent = '✅ 正确！';
       level++;
       document.getElementById('level').textContent = level;
-      setTimeout(nextRound, 800);
+      setTimeout(() => nextRound(gameToken), 800);
     }
   } else {
     // 失误
@@ -133,7 +138,7 @@ function onCellClick(idx) {
     } else {
       msg.textContent = `❌ 错误！还剩 ${3 - misses} 次机会`;
       userInput = [];
-      setTimeout(() => playSequence(), 1000);
+      setTimeout(() => playSequence(gameToken), 1000);
     }
   }
 }
