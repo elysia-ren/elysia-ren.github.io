@@ -855,3 +855,37 @@ input[type=text]:focus,input[type=url]:focus,textarea:focus,select:focus{
 
 .logo-letter{font-family:Georgia,"Times New Roman",serif;font-size:1.25rem;line-height:1;color:var(--primary-dark);}
 .nav-links a > i{display:none!important;}
+
+/* =========================================================
+   QUIETER EDITORIAL PASS
+   Remove dashboard / AI-product visual cues.
+   ========================================================= */
+body{background-image:none!important}
+.navbar{-webkit-backdrop-filter:none!important;backdrop-filter:none!important;background:#faf8f4!important}
+.hero::before{width:430px;height:190px;top:110px;border-color:rgba(210,169,190,.24)}
+.hero::after{opacity:.72}
+.hero .btn{background:transparent!important;border:0!important;border-bottom:1px solid rgba(178,133,154,.55)!important;border-radius:0!important;padding:8px 2px!important;min-height:auto!important;color:#8e5f77!important;box-shadow:none!important}
+.hero .btn:hover{transform:none!important;color:#6f4c5d!important;border-color:#a66c86!important;box-shadow:none!important}
+.features{max-width:980px}
+.cards-container{grid-template-columns:1fr!important;max-width:900px;margin:0 auto;gap:0!important}
+.card{display:grid;grid-template-columns:52px minmax(0,1fr) auto;grid-template-rows:auto auto;align-items:center;column-gap:18px;text-align:left!important;padding:22px 8px!important;background:transparent!important;border:0!important;border-top:1px solid #e7dfdf!important;border-radius:0!important;box-shadow:none!important}
+.card:last-child{border-bottom:1px solid #e7dfdf!important}
+.card:hover{transform:none!important;border-color:#e7dfdf!important;box-shadow:none!important;background:rgba(255,255,255,.28)!important}
+.card-icon{grid-row:1 / span 2;width:40px!important;height:40px!important;margin:0!important;border-radius:50%!important;background:#f3e8ec!important;border:1px solid #e0cfd6;display:flex}
+.card h3{grid-column:2;text-align:left;margin:0 0 5px!important;font-size:1.15rem}
+.card p{grid-column:2;text-align:left;margin:0!important;font-size:.93rem}
+.card .card-btn{grid-column:3;grid-row:1 / span 2;align-self:center;padding:0 0 3px!important;border:0!important;border-bottom:1px solid #cfa8b9!important;border-radius:0!important;background:transparent!important;color:#96657d!important}
+.card .card-btn:hover{background:transparent!important;border-color:#a66c86!important;color:#6f4c5d!important}
+.card-icon i{color:#a66c86!important}
+.tool-icon,.game-icon,.resource-icon{background:transparent!important;border:0!important;box-shadow:none!important}
+.tool-icon{width:40px!important;height:40px!important;border-left:1px solid #decdd4!important;border-radius:0!important}
+.game-icon{width:46px!important;height:46px!important;border-radius:0!important;border-bottom:1px solid #decdd4!important}
+.resource-icon{width:42px!important;height:42px!important;border-radius:0!important;border-left:1px solid #decdd4!important}
+.tag,.game-tag,.resource-tag{background:none!important;border:0!important;padding:0!important;border-radius:0!important;color:#9a7384!important;font-weight:500!important}
+.tool-tags,.game-meta,.resource-tags{gap:10px!important}
+.tag + .tag::before,.game-tag + .game-tag::before,.resource-tag + .resource-tag::before{content:"·";margin-right:10px;color:#c9aab8}
+.card .card-btn i,.game-card i,.resource-card i{display:none!important}
+.scroll-reveal{opacity:1!important;transform:none!important;transition:none!important}
+.section-title::after{background:#cfafbd!important}
+.footer{background:#f7f3ef!important}
+@media(max-width:768px){.card{grid-template-columns:42px minmax(0,1fr);grid-template-rows:auto auto auto;column-gap:14px}.card .card-btn{grid-column:2;grid-row:3;justify-self:start;margin-top:10px}}
