@@ -851,3 +851,7 @@ input[type=text]:focus,input[type=url]:focus,textarea:focus,select:focus{
 @media(prefers-reduced-motion:reduce){
   .hero *,.card,.tool-card,.game-card,.resource-card{animation:none!important}
 }
+
+
+.logo-letter{font-family:Georgia,"Times New Roman",serif;font-size:1.25rem;line-height:1;color:var(--primary-dark);}
+.nav-links a > i{display:none!important;}
