@@ -188,7 +188,7 @@ function tick() {
   // 吃道具
   if (bonus && head[0] === bonus.pos[0] && head[1] === bonus.pos[1]) {
     score += 30;
-    addEffect(bonus.pos[0]*CELL+CELL/2, bonus.pos[1]*CELL+CELL/2, '#ddd5eb');
+    addEffect(bonus.pos[0]*CELL+CELL/2, bonus.pos[1]*CELL+CELL/2, '#d6bd92');
     bonus = null;
     // 缩短蛇身
     if (snake.length > 3) snake.splice(-2);
@@ -208,16 +208,16 @@ function draw() {
   ctx.fillRect(0, 0, w, h);
 
   // 网格线
-  ctx.strokeStyle = 'rgba(216,163,224,0.06)';
+  ctx.strokeStyle = 'rgba(201,135,166,0.07)';
   for (let i = 0; i <= COLS; i++) { ctx.beginPath(); ctx.moveTo(i*CELL,0); ctx.lineTo(i*CELL,h); ctx.stroke(); }
   for (let i = 0; i <= ROWS; i++) { ctx.beginPath(); ctx.moveTo(0,i*CELL); ctx.lineTo(w,i*CELL); ctx.stroke(); }
 
   // 蛇身（渐变色）
   snake.forEach((s, i) => {
     const t = i / snake.length;
-    const r = Math.round(216 - t * 80);
-    const g = Math.round(163 - t * 60);
-    const b = Math.round(224 - t * 40);
+    const r = Math.round(201 + t * 25);
+    const g = Math.round(135 + t * 55);
+    const b = Math.round(166 + t * 43);
     ctx.fillStyle = `rgb(${r},${g},${b})`;
     const pad = i === 0 ? 1 : 2;
     ctx.beginPath();
@@ -248,7 +248,7 @@ function draw() {
   if (bonus) {
     const bp = bonus.pos;
     const a = 0.5 + 0.5 * Math.sin(Date.now() / 150);
-    ctx.fillStyle = `rgba(166,209,255,${a})`;
+    ctx.fillStyle = `rgba(214,189,146,${a})`;
     ctx.beginPath();
     ctx.arc(bp[0]*CELL+CELL/2, bp[1]*CELL+CELL/2, CELL/2-1, 0, Math.PI*2);
     ctx.fill();
