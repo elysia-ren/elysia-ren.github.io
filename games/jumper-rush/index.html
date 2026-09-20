@@ -150,7 +150,7 @@ function loop() {
   });
 
   // 平台碰撞（只在下落时）
-  if (player.vy > 0) {
+  if (player.vy >= 0) {
     platforms.forEach(p => {
       if (player.y + player.h >= p.y && player.y + player.h <= p.y + p.h + 5 &&
           player.x + player.w > p.x && player.x < p.x + p.w) {
