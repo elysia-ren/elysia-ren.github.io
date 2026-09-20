@@ -4,51 +4,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>游戏花园 | 秘密基地</title>
+    <meta name="description" content="游戏花园 - 轻松有趣的小游戏合集，贪吃蛇、打砖块、2048等多种休闲游戏">
+    <meta name="theme-color" content="#D8A3E0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌸</text></svg>">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="common.css">
     <style>
         .category-tabs {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-bottom: 30px;
+            display: flex; gap: 10px; justify-content: center;
+            flex-wrap: wrap; margin-bottom: 30px;
         }
         .tab {
-            padding: 8px 20px;
-            border-radius: var(--radius-pill);
-            border: 2px solid var(--primary-light);
-            background: transparent;
-            color: var(--text);
-            font-weight: 600;
-            cursor: pointer;
+            padding: 8px 20px; border-radius: var(--radius-pill);
+            border: 2px solid var(--primary-light); background: transparent;
+            color: var(--text); font-weight: 600; cursor: pointer;
             transition: all 0.3s ease;
         }
         .tab:hover, .tab.active {
             background: linear-gradient(135deg, var(--primary), var(--accent));
-            color: white;
-            border-color: transparent;
-            box-shadow: var(--glow);
+            color: white; border-color: transparent; box-shadow: var(--glow);
         }
         .games-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 24px;
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 24px;
         }
         .game-card {
-            background: var(--card-bg);
-            border-radius: var(--radius);
-            padding: 30px 20px;
-            text-align: center;
-            box-shadow: var(--shadow);
+            background: var(--card-bg); border-radius: var(--radius);
+            padding: 30px 20px; text-align: center; box-shadow: var(--shadow);
             border: 1px solid rgba(235,212,240,0.3);
-            transition: all 0.3s ease;
-            cursor: pointer;
-            text-decoration: none;
-            display: block;
-            color: inherit;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer; text-decoration: none; display: block; color: inherit;
         }
         .game-card:hover {
             transform: translateY(-6px);
@@ -57,90 +45,62 @@
         .game-icon {
             width: 70px; height: 70px;
             background: linear-gradient(135deg, var(--primary), var(--accent));
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 16px;
-            box-shadow: var(--glow);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 16px; box-shadow: var(--glow);
         }
-        .game-icon i {
-            font-size: 1.8rem;
-            color: white;
-        }
-        .game-card h3 {
-            font-size: 1.15rem;
-            margin-bottom: 8px;
-            color: var(--text);
-        }
-        .game-card p {
-            color: var(--text-light);
-            font-size: 0.9rem;
-            line-height: 1.5;
-        }
-        .game-meta {
-            display: flex;
-            justify-content: center;
-            gap: 8px;
-            margin-top: 12px;
-            flex-wrap: wrap;
-        }
+        .game-icon i { font-size: 1.8rem; color: white; }
+        .game-card h3 { font-size: 1.15rem; margin-bottom: 8px; color: var(--text); }
+        .game-card p { color: var(--text-light); font-size: 0.9rem; line-height: 1.5; }
+        .game-meta { display: flex; justify-content: center; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
         .game-tag {
-            background: var(--primary-light);
-            color: var(--primary-dark);
-            padding: 3px 10px;
-            border-radius: 12px;
-            font-size: 0.75rem;
-            font-weight: 600;
+            background: var(--primary-light); color: var(--primary-dark);
+            padding: 3px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 600;
         }
     </style>
 </head>
 <body>
-    <!-- 导航栏 -->
-    <nav class="navbar">
+    <a href="#main-content" class="skip-link">跳到主要内容</a>
+
+    <nav class="navbar" role="navigation" aria-label="主导航">
         <a href="index.html" class="logo">
-            <div class="logo-icon"><i class="fas fa-fairy"></i></div>
+            <div class="logo-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg></div>
             <span>秘密基地</span>
         </a>
-        <button class="hamburger" aria-label="菜单"><i class="fas fa-bars"></i></button>
-        <div class="nav-links">
-            <a href="index.html"><i class="fas fa-home"></i> 基地首页</a>
-            <a href="explore.html"><i class="fas fa-compass"></i> 妖精工坊</a>
-            <a href="games.html" class="active"><i class="fas fa-gamepad"></i> 游戏花园</a>
-            <a href="resources.html"><i class="fas fa-gem"></i> 资源宝库</a>
+        <button class="hamburger" aria-label="菜单" aria-expanded="false" aria-controls="nav-links"><i class="fas fa-bars" aria-hidden="true"></i></button>
+        <div class="nav-links" id="nav-links">
+            <a href="index.html"><i class="fas fa-home" aria-hidden="true"></i> 基地首页</a>
+            <a href="explore.html"><i class="fas fa-compass" aria-hidden="true"></i> 妖精工坊</a>
+            <a href="games.html" class="active"><i class="fas fa-gamepad" aria-hidden="true"></i> 游戏花园</a>
+            <a href="resources.html"><i class="fas fa-gem" aria-hidden="true"></i> 资源宝库</a>
             <div class="volume-control">
-                <button id="volumeBtn" class="volume-icon"><i class="fas fa-music"></i></button>
+                <button id="volumeBtn" class="volume-icon" aria-label="音乐控制"><i class="fas fa-music" aria-hidden="true"></i></button>
             </div>
         </div>
     </nav>
 
-    <div class="page-container">
-        <h1 class="section-title" style="margin-top:20px;">游戏花园</h1>
-
-        <!-- 分类标签 -->
-        <div class="category-tabs" id="category-tabs">
-            <button class="tab active" data-cat="all">全部</button>
+    <main id="main-content">
+        <div class="page-container">
+            <h1 class="section-title" style="margin-top:20px;">游戏花园</h1>
+            <div class="category-tabs" id="category-tabs" role="tablist" aria-label="游戏分类">
+                <button class="tab active" data-cat="all" role="tab" aria-selected="true">全部</button>
+            </div>
+            <div class="games-grid" id="games-grid" role="tabpanel">
+                <div class="loading"><i class="fas fa-spinner" aria-hidden="true"></i><p>加载中...</p></div>
+            </div>
         </div>
+    </main>
 
-        <!-- 游戏列表 -->
-        <div class="games-grid" id="games-grid">
-            <div class="loading"><i class="fas fa-spinner"></i><p>加载中...</p></div>
-        </div>
-    </div>
-
-    <!-- 页脚 -->
-    <footer class="footer">
+    <footer class="footer" role="contentinfo">
         <div class="copyright">
-            <p>&copy; 2025 粉色妖精小姐的秘密基地 | 梦幻与实用交织的数字乐园</p>
+            <p>&copy; 2026 粉色妖精小姐的秘密基地 | 梦幻与实用交织的数字乐园</p>
         </div>
     </footer>
 
-    <audio id="bgm" loop>
+    <audio id="bgm" loop preload="none">
         <source src="assets/music/致爱 A Song For Beloved - 宴宁_徐鲤.mp3" type="audio/mpeg">
     </audio>
     <script src="common.js"></script>
     <script>
-        /* 内嵌游戏清单（fetch 失败时兜底，新增游戏需同步更新此处） */
         const FALLBACK_GAMES = [
             {"id":"snake-hunter","name":"几何贪吃猎手","description":"操控渐变方块吞噬光点变长，加速道具与缩小陷阱让经典玩法焕发新生。","icon":"fas fa-worm","category":"休闲","url":"games/snake-hunter/index.html","version":"1.0.0"},
             {"id":"brick-breaker","name":"方块破壁者","description":"挡板反弹小球击碎矩阵色块，普通砖、双倍砖、弹性砖三种玩法。","icon":"fas fa-cubes","category":"休闲","url":"games/brick-breaker/index.html","version":"1.0.0"},
@@ -153,6 +113,8 @@
             {"id":"match-magic","name":"磁力消消方阵","description":"点击消除相连同色方块，支持斜向相连，限定步数达成目标分数。","icon":"fas fa-magnet","category":"休闲","url":"games/match-magic/index.html","version":"1.0.0"},
             {"id":"particle-collector","name":"航线粒子收集","description":"操控收集器捕捉蓝色光点，躲避红色危险粒子，轻度休闲适合碎片时间。","icon":"fas fa-atom","category":"休闲","url":"games/particle-collector/index.html","version":"1.0.0"}
         ];
+
+        let allGames = [];
 
         document.addEventListener('DOMContentLoaded', async () => {
             let loaded = await loadManifest('games/manifest.json');
@@ -169,10 +131,10 @@
                 btn.className = 'tab';
                 btn.dataset.cat = cat;
                 btn.textContent = cat;
+                btn.setAttribute('role', 'tab');
                 btn.addEventListener('click', () => filterByCategory(cat));
                 tabs.appendChild(btn);
             });
-            // 绑定"全部"
             tabs.querySelector('[data-cat="all"]').addEventListener('click', () => {
                 setActiveTab('all');
                 renderGameCards(allGames);
@@ -181,19 +143,22 @@
 
         function filterByCategory(cat) {
             setActiveTab(cat);
-            const filtered = allGames.filter(g => (g.category || '未分类') === cat);
-            renderGameCards(filtered);
+            renderGameCards(allGames.filter(g => (g.category || '未分类') === cat));
         }
 
         function setActiveTab(cat) {
-            document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.cat === cat));
+            document.querySelectorAll('.tab').forEach(t => {
+                const isActive = t.dataset.cat === cat;
+                t.classList.toggle('active', isActive);
+                t.setAttribute('aria-selected', isActive);
+            });
         }
 
         function renderGameCards(games) {
             const grid = document.getElementById('games-grid');
             renderCards(games, grid, game => `
-                <a href="${game.url}" class="game-card" target="_blank">
-                    <div class="game-icon"><i class="${game.icon || 'fas fa-gamepad'}"></i></div>
+                <a href="${game.url}" class="game-card" target="_blank" rel="noopener">
+                    <div class="game-icon"><i class="${game.icon || 'fas fa-gamepad'}" aria-hidden="true"></i></div>
                     <h3>${game.name}</h3>
                     <p>${game.description || ''}</p>
                     <div class="game-meta">

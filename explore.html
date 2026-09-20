@@ -4,8 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>妖精工坊 | 秘密基地</title>
+    <meta name="description" content="妖精工坊 - 精心打造的在线工具集合：Base64编解码、JSON格式化、颜色转换等">
+    <meta name="theme-color" content="#D8A3E0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌸</text></svg>">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="common.css">
     <style>
@@ -20,7 +25,7 @@
             padding: 28px;
             box-shadow: var(--shadow);
             border: 1px solid rgba(235, 212, 240, 0.3);
-            transition: all 0.3s ease;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
             cursor: pointer;
         }
         .tool-card:hover {
@@ -67,8 +72,6 @@
             font-size: 0.8rem;
             font-weight: 600;
         }
-
-        /* 工具详情面板 */
         .tool-panel {
             display: none;
             background: white;
@@ -89,6 +92,7 @@
         .panel-header h2 {
             background: linear-gradient(to right, var(--primary), var(--accent));
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
         }
         .close-btn {
@@ -98,7 +102,6 @@
             padding: 4px 8px;
         }
         .close-btn:hover { color: var(--primary-dark); }
-
         .io-area {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -123,9 +126,7 @@
             outline: none;
             transition: border-color 0.3s;
         }
-        .io-area textarea:focus {
-            border-color: var(--primary);
-        }
+        .io-area textarea:focus { border-color: var(--primary); }
         .action-bar {
             display: flex;
             gap: 12px;
@@ -141,139 +142,103 @@
         }
         .result-msg.success { display: block; background: #e8f5e9; color: #2e7d32; }
         .result-msg.error { display: block; background: #fce4ec; color: #c62828; }
-
         @media (max-width: 768px) {
             .io-area { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
-    <!-- 导航栏 -->
-    <nav class="navbar">
+    <a href="#main-content" class="skip-link">跳到主要内容</a>
+
+    <nav class="navbar" role="navigation" aria-label="主导航">
         <a href="index.html" class="logo">
-            <div class="logo-icon"><i class="fas fa-fairy"></i></div>
+            <div class="logo-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg></div>
             <span>秘密基地</span>
         </a>
-        <button class="hamburger" aria-label="菜单"><i class="fas fa-bars"></i></button>
-        <div class="nav-links">
-            <a href="index.html"><i class="fas fa-home"></i> 基地首页</a>
-            <a href="explore.html" class="active"><i class="fas fa-compass"></i> 妖精工坊</a>
-            <a href="games.html"><i class="fas fa-gamepad"></i> 游戏花园</a>
-            <a href="resources.html"><i class="fas fa-gem"></i> 资源宝库</a>
+        <button class="hamburger" aria-label="菜单" aria-expanded="false" aria-controls="nav-links"><i class="fas fa-bars" aria-hidden="true"></i></button>
+        <div class="nav-links" id="nav-links">
+            <a href="index.html"><i class="fas fa-home" aria-hidden="true"></i> 基地首页</a>
+            <a href="explore.html" class="active"><i class="fas fa-compass" aria-hidden="true"></i> 妖精工坊</a>
+            <a href="games.html"><i class="fas fa-gamepad" aria-hidden="true"></i> 游戏花园</a>
+            <a href="resources.html"><i class="fas fa-gem" aria-hidden="true"></i> 资源宝库</a>
             <div class="volume-control">
-                <button id="volumeBtn" class="volume-icon"><i class="fas fa-music"></i></button>
+                <button id="volumeBtn" class="volume-icon" aria-label="音乐控制"><i class="fas fa-music" aria-hidden="true"></i></button>
             </div>
         </div>
     </nav>
 
-    <div class="page-container">
-        <h1 class="section-title" style="margin-top:20px;">妖精工坊</h1>
+    <main id="main-content">
+        <div class="page-container">
+            <h1 class="section-title" style="margin-top:20px;">妖精工坊</h1>
 
-        <!-- 工具详情面板（点击卡片后展开） -->
-        <div class="tool-panel" id="tool-panel">
-            <div class="panel-header">
-                <h2 id="panel-title">工具名称</h2>
-                <button class="close-btn" onclick="closePanel()"><i class="fas fa-times"></i></button>
-            </div>
-            <div id="panel-content"></div>
-        </div>
-
-        <!-- 工具卡片列表 -->
-        <div class="tools-grid" id="tools-grid">
-            <!-- Base64 编解码 -->
-            <div class="tool-card" onclick="openTool('base64')">
-                <div class="tool-header">
-                    <div class="tool-icon"><i class="fas fa-lock"></i></div>
-                    <h3>Base64 编解码</h3>
+            <div class="tool-panel" id="tool-panel" role="dialog" aria-label="工具面板">
+                <div class="panel-header">
+                    <h2 id="panel-title">工具名称</h2>
+                    <button class="close-btn" onclick="closePanel()" aria-label="关闭面板"><i class="fas fa-times" aria-hidden="true"></i></button>
                 </div>
-                <p>将文本进行 Base64 编码或解码，常用于数据传输和简单加密场景。</p>
-                <div class="tool-tags">
-                    <span class="tag">编码</span>
-                    <span class="tag">解码</span>
-                    <span class="tag">文本处理</span>
-                </div>
+                <div id="panel-content"></div>
             </div>
 
-            <!-- URL 编解码 -->
-            <div class="tool-card" onclick="openTool('url')">
-                <div class="tool-header">
-                    <div class="tool-icon"><i class="fas fa-link"></i></div>
-                    <h3>URL 编解码</h3>
+            <div class="tools-grid" id="tools-grid">
+                <div class="tool-card" onclick="openTool('base64')" role="button" tabindex="0" aria-label="打开 Base64 编解码工具">
+                    <div class="tool-header">
+                        <div class="tool-icon"><i class="fas fa-lock" aria-hidden="true"></i></div>
+                        <h3>Base64 编解码</h3>
+                    </div>
+                    <p>将文本进行 Base64 编码或解码，常用于数据传输和简单加密场景。</p>
+                    <div class="tool-tags"><span class="tag">编码</span><span class="tag">解码</span><span class="tag">文本处理</span></div>
                 </div>
-                <p>对 URL 中的特殊字符进行编码或解码，处理中文链接和参数时必备。</p>
-                <div class="tool-tags">
-                    <span class="tag">URL</span>
-                    <span class="tag">编码</span>
-                    <span class="tag">链接处理</span>
+                <div class="tool-card" onclick="openTool('url')" role="button" tabindex="0" aria-label="打开 URL 编解码工具">
+                    <div class="tool-header">
+                        <div class="tool-icon"><i class="fas fa-link" aria-hidden="true"></i></div>
+                        <h3>URL 编解码</h3>
+                    </div>
+                    <p>对 URL 中的特殊字符进行编码或解码，处理中文链接和参数时必备。</p>
+                    <div class="tool-tags"><span class="tag">URL</span><span class="tag">编码</span><span class="tag">链接处理</span></div>
                 </div>
-            </div>
-
-            <!-- JSON 格式化 -->
-            <div class="tool-card" onclick="openTool('json')">
-                <div class="tool-header">
-                    <div class="tool-icon"><i class="fas fa-code"></i></div>
-                    <h3>JSON 格式化</h3>
+                <div class="tool-card" onclick="openTool('json')" role="button" tabindex="0" aria-label="打开 JSON 格式化工具">
+                    <div class="tool-header">
+                        <div class="tool-icon"><i class="fas fa-code" aria-hidden="true"></i></div>
+                        <h3>JSON 格式化</h3>
+                    </div>
+                    <p>将压缩的 JSON 数据格式化为易读的缩进格式，支持语法检查。</p>
+                    <div class="tool-tags"><span class="tag">JSON</span><span class="tag">格式化</span><span class="tag">开发工具</span></div>
                 </div>
-                <p>将压缩的 JSON 数据格式化为易读的缩进格式，支持语法检查。</p>
-                <div class="tool-tags">
-                    <span class="tag">JSON</span>
-                    <span class="tag">格式化</span>
-                    <span class="tag">开发工具</span>
+                <div class="tool-card" onclick="openTool('diff')" role="button" tabindex="0" aria-label="打开文本对比工具">
+                    <div class="tool-header">
+                        <div class="tool-icon"><i class="fas fa-columns" aria-hidden="true"></i></div>
+                        <h3>文本对比</h3>
+                    </div>
+                    <p>比较两段文本的差异，高亮显示不同之处，适合校对和版本比对。</p>
+                    <div class="tool-tags"><span class="tag">对比</span><span class="tag">差异</span><span class="tag">校对</span></div>
                 </div>
-            </div>
-
-            <!-- 文本对比 -->
-            <div class="tool-card" onclick="openTool('diff')">
-                <div class="tool-header">
-                    <div class="tool-icon"><i class="fas fa-columns"></i></div>
-                    <h3>文本对比</h3>
+                <div class="tool-card" onclick="openTool('counter')" role="button" tabindex="0" aria-label="打开字数统计工具">
+                    <div class="tool-header">
+                        <div class="tool-icon"><i class="fas fa-calculator" aria-hidden="true"></i></div>
+                        <h3>字数统计</h3>
+                    </div>
+                    <p>统计文本的字符数、单词数、行数等信息，写作时的好帮手。</p>
+                    <div class="tool-tags"><span class="tag">统计</span><span class="tag">字数</span><span class="tag">写作</span></div>
                 </div>
-                <p>比较两段文本的差异，高亮显示不同之处，适合校对和版本比对。</p>
-                <div class="tool-tags">
-                    <span class="tag">对比</span>
-                    <span class="tag">差异</span>
-                    <span class="tag">校对</span>
-                </div>
-            </div>
-
-            <!-- 字数统计 -->
-            <div class="tool-card" onclick="openTool('counter')">
-                <div class="tool-header">
-                    <div class="tool-icon"><i class="fas fa-calculator"></i></div>
-                    <h3>字数统计</h3>
-                </div>
-                <p>统计文本的字符数、单词数、行数等信息，写作时的好帮手。</p>
-                <div class="tool-tags">
-                    <span class="tag">统计</span>
-                    <span class="tag">字数</span>
-                    <span class="tag">写作</span>
-                </div>
-            </div>
-
-            <!-- 颜色转换 -->
-            <div class="tool-card" onclick="openTool('color')">
-                <div class="tool-header">
-                    <div class="tool-icon"><i class="fas fa-palette"></i></div>
-                    <h3>颜色转换</h3>
-                </div>
-                <p>在 HEX、RGB、HSL 等颜色格式之间自由转换，附带颜色预览。</p>
-                <div class="tool-tags">
-                    <span class="tag">颜色</span>
-                    <span class="tag">设计</span>
-                    <span class="tag">转换</span>
+                <div class="tool-card" onclick="openTool('color')" role="button" tabindex="0" aria-label="打开颜色转换工具">
+                    <div class="tool-header">
+                        <div class="tool-icon"><i class="fas fa-palette" aria-hidden="true"></i></div>
+                        <h3>颜色转换</h3>
+                    </div>
+                    <p>在 HEX、RGB、HSL 等颜色格式之间自由转换，附带颜色预览。</p>
+                    <div class="tool-tags"><span class="tag">颜色</span><span class="tag">设计</span><span class="tag">转换</span></div>
                 </div>
             </div>
         </div>
-    </div>
+    </main>
 
-    <!-- 页脚 -->
-    <footer class="footer">
+    <footer class="footer" role="contentinfo">
         <div class="copyright">
-            <p>&copy; 2025 粉色妖精小姐的秘密基地 | 梦幻与实用交织的数字乐园</p>
+            <p>&copy; 2026 粉色妖精小姐的秘密基地 | 梦幻与实用交织的数字乐园</p>
         </div>
     </footer>
 
-    <audio id="bgm" loop>
+    <audio id="bgm" loop preload="none">
         <source src="assets/music/致爱 A Song For Beloved - 宴宁_徐鲤.mp3" type="audio/mpeg">
     </audio>
     <script src="common.js"></script>
@@ -282,84 +247,77 @@
         const tools = {
             base64: {
                 title: 'Base64 编解码',
-                html: `
-                    <div class="io-area">
-                        <div><label>输入文本</label><textarea id="b64-in" placeholder="输入要编码/解码的文本..."></textarea></div>
-                        <div><label>输出结果</label><textarea id="b64-out" readonly placeholder="结果将显示在这里"></textarea></div>
-                    </div>
-                    <div class="action-bar">
-                        <button class="btn btn-primary" onclick="b64Encode()"><i class="fas fa-lock"></i> 编码</button>
-                        <button class="btn btn-outline" onclick="b64Decode()"><i class="fas fa-unlock"></i> 解码</button>
-                        <button class="btn btn-outline" onclick="copyText('b64-out')"><i class="fas fa-copy"></i> 复制</button>
-                    </div>
-                    <div class="result-msg" id="b64-msg"></div>`
+                html: `<div class="io-area">
+                    <div><label for="b64-in">输入文本</label><textarea id="b64-in" placeholder="输入要编码/解码的文本..."></textarea></div>
+                    <div><label for="b64-out">输出结果</label><textarea id="b64-out" readonly placeholder="结果将显示在这里"></textarea></div>
+                </div>
+                <div class="action-bar">
+                    <button class="btn btn-primary" onclick="b64Encode()"><i class="fas fa-lock" aria-hidden="true"></i> 编码</button>
+                    <button class="btn btn-outline" onclick="b64Decode()"><i class="fas fa-unlock" aria-hidden="true"></i> 解码</button>
+                    <button class="btn btn-outline" onclick="copyText('b64-out')"><i class="fas fa-copy" aria-hidden="true"></i> 复制</button>
+                </div>
+                <div class="result-msg" id="b64-msg"></div>`
             },
             url: {
                 title: 'URL 编解码',
-                html: `
-                    <div class="io-area">
-                        <div><label>输入文本</label><textarea id="url-in" placeholder="输入要编码/解码的 URL..."></textarea></div>
-                        <div><label>输出结果</label><textarea id="url-out" readonly placeholder="结果将显示在这里"></textarea></div>
-                    </div>
-                    <div class="action-bar">
-                        <button class="btn btn-primary" onclick="urlEncode()"><i class="fas fa-lock"></i> 编码</button>
-                        <button class="btn btn-outline" onclick="urlDecode()"><i class="fas fa-unlock"></i> 解码</button>
-                        <button class="btn btn-outline" onclick="copyText('url-out')"><i class="fas fa-copy"></i> 复制</button>
-                    </div>
-                    <div class="result-msg" id="url-msg"></div>`
+                html: `<div class="io-area">
+                    <div><label for="url-in">输入文本</label><textarea id="url-in" placeholder="输入要编码/解码的 URL..."></textarea></div>
+                    <div><label for="url-out">输出结果</label><textarea id="url-out" readonly placeholder="结果将显示在这里"></textarea></div>
+                </div>
+                <div class="action-bar">
+                    <button class="btn btn-primary" onclick="urlEncode()"><i class="fas fa-lock" aria-hidden="true"></i> 编码</button>
+                    <button class="btn btn-outline" onclick="urlDecode()"><i class="fas fa-unlock" aria-hidden="true"></i> 解码</button>
+                    <button class="btn btn-outline" onclick="copyText('url-out')"><i class="fas fa-copy" aria-hidden="true"></i> 复制</button>
+                </div>
+                <div class="result-msg" id="url-msg"></div>`
             },
             json: {
                 title: 'JSON 格式化',
-                html: `
-                    <div class="io-area">
-                        <div><label>输入 JSON</label><textarea id="json-in" placeholder='粘贴 JSON 数据，如 {"key":"value"}'></textarea></div>
-                        <div><label>格式化结果</label><textarea id="json-out" readonly placeholder="格式化后的 JSON 将显示在这里"></textarea></div>
-                    </div>
-                    <div class="action-bar">
-                        <button class="btn btn-primary" onclick="jsonFormat()"><i class="fas fa-magic"></i> 格式化</button>
-                        <button class="btn btn-outline" onclick="jsonMinify()"><i class="fas fa-compress"></i> 压缩</button>
-                        <button class="btn btn-outline" onclick="copyText('json-out')"><i class="fas fa-copy"></i> 复制</button>
-                    </div>
-                    <div class="result-msg" id="json-msg"></div>`
+                html: `<div class="io-area">
+                    <div><label for="json-in">输入 JSON</label><textarea id="json-in" placeholder='粘贴 JSON 数据，如 {"key":"value"}'></textarea></div>
+                    <div><label for="json-out">格式化结果</label><textarea id="json-out" readonly placeholder="格式化后的 JSON 将显示在这里"></textarea></div>
+                </div>
+                <div class="action-bar">
+                    <button class="btn btn-primary" onclick="jsonFormat()"><i class="fas fa-magic" aria-hidden="true"></i> 格式化</button>
+                    <button class="btn btn-outline" onclick="jsonMinify()"><i class="fas fa-compress" aria-hidden="true"></i> 压缩</button>
+                    <button class="btn btn-outline" onclick="copyText('json-out')"><i class="fas fa-copy" aria-hidden="true"></i> 复制</button>
+                </div>
+                <div class="result-msg" id="json-msg"></div>`
             },
             diff: {
                 title: '文本对比',
-                html: `
-                    <div class="io-area">
-                        <div><label>文本 A</label><textarea id="diff-a" placeholder="输入第一段文本..."></textarea></div>
-                        <div><label>文本 B</label><textarea id="diff-b" placeholder="输入第二段文本..."></textarea></div>
-                    </div>
-                    <div class="action-bar">
-                        <button class="btn btn-primary" onclick="doDiff()"><i class="fas fa-search"></i> 对比</button>
-                    </div>
-                    <div id="diff-result" style="margin-top:16px;padding:16px;background:var(--background);border-radius:12px;display:none;font-family:monospace;white-space:pre-wrap;line-height:1.8;"></div>`
+                html: `<div class="io-area">
+                    <div><label for="diff-a">文本 A</label><textarea id="diff-a" placeholder="输入第一段文本..."></textarea></div>
+                    <div><label for="diff-b">文本 B</label><textarea id="diff-b" placeholder="输入第二段文本..."></textarea></div>
+                </div>
+                <div class="action-bar">
+                    <button class="btn btn-primary" onclick="doDiff()"><i class="fas fa-search" aria-hidden="true"></i> 对比</button>
+                </div>
+                <div id="diff-result" style="margin-top:16px;padding:16px;background:var(--background);border-radius:12px;display:none;font-family:monospace;white-space:pre-wrap;line-height:1.8;"></div>`
             },
             counter: {
                 title: '字数统计',
-                html: `
-                    <div style="margin-bottom:16px;">
-                        <label style="font-weight:600;display:block;margin-bottom:6px;">输入文本</label>
-                        <textarea id="cnt-in" placeholder="输入或粘贴文本..." oninput="doCount()" style="width:100%;min-height:150px;border:2px solid var(--primary-light);border-radius:12px;padding:12px;font-size:0.95rem;resize:vertical;outline:none;"></textarea>
-                    </div>
-                    <div id="cnt-result" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;"></div>`
+                html: `<div style="margin-bottom:16px;">
+                    <label for="cnt-in" style="font-weight:600;display:block;margin-bottom:6px;">输入文本</label>
+                    <textarea id="cnt-in" placeholder="输入或粘贴文本..." oninput="doCount()" style="width:100%;min-height:150px;border:2px solid var(--primary-light);border-radius:12px;padding:12px;font-size:0.95rem;resize:vertical;outline:none;"></textarea>
+                </div>
+                <div id="cnt-result" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;"></div>`
             },
             color: {
                 title: '颜色转换',
-                html: `
-                    <div style="display:flex;gap:16px;align-items:end;flex-wrap:wrap;margin-bottom:16px;">
-                        <div><label style="font-weight:600;display:block;margin-bottom:6px;">选择颜色</label>
-                            <input type="color" id="color-picker" value="#D8A3E0" onchange="colorFromPicker()" style="width:60px;height:44px;border:none;cursor:pointer;border-radius:8px;">
-                        </div>
-                        <div style="flex:1;min-width:200px;"><label style="font-weight:600;display:block;margin-bottom:6px;">HEX</label>
-                            <input type="text" id="color-hex" value="#D8A3E0" oninput="colorFromHex()" style="width:100%;padding:10px;border:2px solid var(--primary-light);border-radius:8px;font-family:monospace;outline:none;">
-                        </div>
+                html: `<div style="display:flex;gap:16px;align-items:end;flex-wrap:wrap;margin-bottom:16px;">
+                    <div><label for="color-picker" style="font-weight:600;display:block;margin-bottom:6px;">选择颜色</label>
+                        <input type="color" id="color-picker" value="#D8A3E0" onchange="colorFromPicker()" style="width:60px;height:44px;border:none;cursor:pointer;border-radius:8px;">
                     </div>
-                    <div id="color-outputs" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;"></div>
-                    <div id="color-preview" style="margin-top:16px;height:80px;border-radius:12px;border:2px solid rgba(0,0,0,0.05);"></div>`
+                    <div style="flex:1;min-width:200px;"><label for="color-hex" style="font-weight:600;display:block;margin-bottom:6px;">HEX</label>
+                        <input type="text" id="color-hex" value="#D8A3E0" oninput="colorFromHex()" style="width:100%;padding:10px;border:2px solid var(--primary-light);border-radius:8px;font-family:monospace;outline:none;">
+                    </div>
+                </div>
+                <div id="color-outputs" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;"></div>
+                <div id="color-preview" style="margin-top:16px;height:80px;border-radius:12px;border:2px solid rgba(0,0,0,0.05);"></div>`
             }
         };
 
-        /* ============ 面板控制 ============ */
         function openTool(id) {
             const tool = tools[id];
             if (!tool) return;
@@ -367,7 +325,6 @@
             document.getElementById('panel-content').innerHTML = tool.html;
             document.getElementById('tool-panel').classList.add('active');
             document.getElementById('tool-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
-            // 初始化需要的工具
             if (id === 'counter') doCount();
             if (id === 'color') colorFromPicker();
         }
@@ -375,7 +332,33 @@
             document.getElementById('tool-panel').classList.remove('active');
         }
 
-        /* ============ Base64 ============ */
+        /* 键盘支持：Enter/Space 打开工具 */
+        document.querySelectorAll('.tool-card').forEach(card => {
+            card.addEventListener('keydown', e => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    card.click();
+                }
+            });
+        });
+
+        function showMsg(id, text, type) {
+            const el = document.getElementById(id);
+            el.textContent = text;
+            el.className = 'result-msg ' + type;
+        }
+        function escapeHtml(s) {
+            return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+        }
+        function copyText(id) {
+            const el = document.getElementById(id);
+            if (!el.value) return;
+            navigator.clipboard.writeText(el.value).then(() => {
+                const msgId = id.replace(/-out$/, '-msg');
+                showMsg(msgId, '已复制到剪贴板！', 'success');
+            });
+        }
+
         function b64Encode() {
             try {
                 document.getElementById('b64-out').value = btoa(unescape(encodeURIComponent(document.getElementById('b64-in').value)));
@@ -388,8 +371,6 @@
                 showMsg('b64-msg', '解码成功！', 'success');
             } catch(e) { showMsg('b64-msg', '解码失败，请检查输入是否为有效 Base64', 'error'); }
         }
-
-        /* ============ URL ============ */
         function urlEncode() {
             document.getElementById('url-out').value = encodeURIComponent(document.getElementById('url-in').value);
             showMsg('url-msg', '编码成功！', 'success');
@@ -400,8 +381,6 @@
                 showMsg('url-msg', '解码成功！', 'success');
             } catch(e) { showMsg('url-msg', '解码失败: ' + e.message, 'error'); }
         }
-
-        /* ============ JSON ============ */
         function jsonFormat() {
             try {
                 const obj = JSON.parse(document.getElementById('json-in').value);
@@ -416,8 +395,6 @@
                 showMsg('json-msg', '压缩成功！', 'success');
             } catch(e) { showMsg('json-msg', 'JSON 解析失败: ' + e.message, 'error'); }
         }
-
-        /* ============ Diff ============ */
         function doDiff() {
             const a = document.getElementById('diff-a').value.split('\n');
             const b = document.getElementById('diff-b').value.split('\n');
@@ -436,32 +413,21 @@
             result.innerHTML = html || '<span style="color:#2e7d32">两段文本完全相同 ✓</span>';
             result.style.display = 'block';
         }
-
-        /* ============ Counter ============ */
         function doCount() {
             const text = document.getElementById('cnt-in').value;
             const chars = text.length;
             const charsNoSpace = text.replace(/\s/g, '').length;
             const words = text.trim() ? text.trim().split(/\s+/).length : 0;
             const lines = text ? text.split('\n').length : 0;
-            const cn = (text.match(/[\u4e00-\u9fff]/g) || []).length;
-            const en = (text.match(/[a-zA-Z]/g) || []).length;
+            const cjk = (text.match(/[\u4e00-\u9fff]/g) || []).length;
             document.getElementById('cnt-result').innerHTML = [
-                statCard('总字符', chars),
-                statCard('不含空格', charsNoSpace),
-                statCard('单词数', words),
-                statCard('行数', lines),
-                statCard('中文字符', cn),
-                statCard('英文字母', en),
-            ].join('');
+                ['字符数', chars],
+                ['不含空格', charsNoSpace],
+                ['单词数', words],
+                ['行数', lines],
+                ['中文字符', cjk]
+            ].map(([label, val]) => `<div style="background:var(--card-bg);padding:16px;border-radius:12px;text-align:center;box-shadow:var(--shadow);"><div style="font-size:1.8rem;font-weight:700;color:var(--primary-dark);">${val}</div><div style="font-size:0.85rem;color:var(--text-light);margin-top:4px;">${label}</div></div>`).join('');
         }
-        function statCard(label, val) {
-            return `<div style="background:white;padding:16px;border-radius:12px;text-align:center;box-shadow:0 2px 10px rgba(0,0,0,0.05);">
-                <div style="font-size:1.8rem;font-weight:700;background:linear-gradient(to right,var(--primary),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;">${val}</div>
-                <div style="color:var(--text-light);font-size:0.85rem;margin-top:4px;">${label}</div></div>`;
-        }
-
-        /* ============ Color ============ */
         function colorFromPicker() {
             const hex = document.getElementById('color-picker').value;
             document.getElementById('color-hex').value = hex;
@@ -476,57 +442,25 @@
             }
         }
         function updateColorOutputs(hex) {
-            const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+            const r = parseInt(hex.slice(1,3), 16);
+            const g = parseInt(hex.slice(3,5), 16);
+            const b = parseInt(hex.slice(5,7), 16);
             const max = Math.max(r,g,b)/255, min = Math.min(r,g,b)/255;
-            const l = (max+min)/2, s = max===min?0:(max-min)/(1-Math.abs(2*l-1));
-            let h = 0;
+            const l = (max+min)/2;
+            let h = 0, s = 0;
             if (max !== min) {
-                const d = (r-g)**2 + (g-b)**2 + (b-r)**2;
-                h = Math.round(60 * ((g-b)/(max-min) + (r>=g?6:0)));
+                const d = max - min;
+                s = l > 0.5 ? d/(2-max-min) : d/(max+min);
+                if (max === r/255) h = ((g/255-b/255)/d + (g<b?6:0)) * 60;
+                else if (max === g/255) h = ((b/255-r/255)/d + 2) * 60;
+                else h = ((r/255-g/255)/d + 4) * 60;
             }
             document.getElementById('color-outputs').innerHTML = [
-                `<div style="background:white;padding:12px;border-radius:10px;font-family:monospace;"><strong>HEX:</strong> ${hex}</div>`,
-                `<div style="background:white;padding:12px;border-radius:10px;font-family:monospace;"><strong>RGB:</strong> rgb(${r}, ${g}, ${b})</div>`,
-                `<div style="background:white;padding:12px;border-radius:10px;font-family:monospace;"><strong>HSL:</strong> hsl(${h}, ${Math.round(s*100)}%, ${Math.round(l*100)}%)</div>`,
-            ].join('');
+                ['HEX', hex.toUpperCase()],
+                ['RGB', `rgb(${r}, ${g}, ${b})`],
+                ['HSL', `hsl(${Math.round(h)}, ${Math.round(s*100)}%, ${Math.round(l*100)}%)`]
+            ].map(([label, val]) => `<div style="background:var(--card-bg);padding:12px;border-radius:10px;font-family:monospace;font-size:0.9rem;"><strong style="color:var(--primary-dark);">${label}:</strong> ${val}</div>`).join('');
             document.getElementById('color-preview').style.background = hex;
-        }
-
-        /* ============ 通用 ============ */
-        function copyText(id) {
-            const el = document.getElementById(id);
-            if (!el || !el.value) return;
-            const text = el.value;
-            /* 优先用 Clipboard API，降级用 execCommand */
-            if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(text).then(() => {
-                    const msgId = id.replace(/-out$/, '-msg');
-                    const msgEl = document.getElementById(msgId);
-                    if (msgEl) { msgEl.textContent = '已复制到剪贴板！'; msgEl.className = 'result-msg success'; }
-                });
-            } else {
-                const ta = document.createElement('textarea');
-                ta.value = text;
-                ta.style.cssText = 'position:fixed;left:-9999px';
-                document.body.appendChild(ta);
-                ta.select();
-                document.execCommand('copy');
-                document.body.removeChild(ta);
-                const msgId = id.replace(/-out$/, '-msg');
-                const msgEl = document.getElementById(msgId);
-                if (msgEl) { msgEl.textContent = '已复制到剪贴板！'; msgEl.className = 'result-msg success'; }
-            }
-        }
-        function showMsg(id, text, type) {
-            const el = document.getElementById(id);
-            if (!el) return;
-            el.textContent = text;
-            el.className = 'result-msg ' + type;
-            setTimeout(() => el.style.display = 'none', 3000);
-            el.style.display = 'block';
-        }
-        function escapeHtml(s) {
-            return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
         }
     </script>
 </body>
