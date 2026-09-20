@@ -26,6 +26,7 @@ canvas{border-radius:12px;box-shadow:0 0 40px rgba(216,163,224,.3)}
 .d-btn{width:56px;height:56px;background:rgba(216,163,224,.15);border:2px solid rgba(216,163,224,.3);border-radius:14px;color:#D8A3E0;font-size:1.2rem;display:flex;align-items:center;justify-content:center;cursor:pointer;user-select:none}
 .d-btn:active{background:rgba(216,163,224,.35)}
 </style>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23faf7f3'/%3E%3Cpath d='M19 15h27v6H25v10h18v6H25v12h21v-6H32V37h15v-6H25V21h21v-6z' fill='%23a66c86'/%3E%3Cpath d='M19 47h27' stroke='%23d9c29a' stroke-width='2'/%3E%3C/svg%3E">
 </head>
 <body>
 <div class="top-bar">
@@ -132,16 +133,30 @@ function initLevel() {
     slowZones.push({ x: zx, y: zy });
   }
 
-  // 生成传送门（成对）
+  // 生成传送门（成对）。终点和已有特殊格永远不占用。
   portals = [];
   const portalPairs = Math.min(1 + Math.floor(level / 2), 3);
+  const occupied = (p) =>
+    (p.x === 0 && p.y === 0) ||
+    (p.x === goal.x && p.y === goal.y) ||
+    slowZones.some(z => z.x === p.x && z.y === p.y) ||
+    portals.some(q =>
+      (q.a.x === p.x && q.a.y === p.y) ||
+      (q.b.x === p.x && q.b.y === p.y)
+    );
+
   for (let i = 0; i < portalPairs; i++) {
-    let a, b;
-    do {
-      a = { x: Math.floor(Math.random() * COLS), y: Math.floor(Math.random() * ROWS) };
-      b = { x: Math.floor(Math.random() * COLS), y: Math.floor(Math.random() * ROWS) };
-    } while (a.x === b.x && a.y === b.y || (a.x===0&&a.y===0) || (b.x===0&&b.y===0));
-    portals.push({ a, b, color: `hsl(${i*120+260},70%,65%)` });
+    let a = null, b = null;
+    for (let attempt = 0; attempt < 100 && !a; attempt++) {
+      const candidate = { x: Math.floor(Math.random() * COLS), y: Math.floor(Math.random() * ROWS) };
+      if (!occupied(candidate)) a = candidate;
+    }
+    for (let attempt = 0; attempt < 100 && a && !b; attempt++) {
+      const candidate = { x: Math.floor(Math.random() * COLS), y: Math.floor(Math.random() * ROWS) };
+      if (candidate.x === a.x && candidate.y === a.y) continue;
+      if (!occupied(candidate)) b = candidate;
+    }
+    if (a && b) portals.push({ a, b, color: `hsl(${i*120+260},70%,65%)` });
   }
 
   document.getElementById('steps').textContent = '0';
