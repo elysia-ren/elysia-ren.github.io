@@ -25,6 +25,7 @@ body{background:#1a1028;display:flex;flex-direction:column;align-items:center;ju
 .overlay button{background:linear-gradient(135deg,#D8A3E0,#FFE0E9);color:#fff;border:none;border-radius:50px;padding:14px 36px;font-size:1.1rem;cursor:pointer;font-weight:600}
 @media(max-width:400px){.cell{width:min(36px,10vw);height:min(36px,10vw);font-size:.95rem}}
 </style>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23faf7f3'/%3E%3Cpath d='M19 15h27v6H25v10h18v6H25v12h21v-6H32V37h15v-6H25V21h21v-6z' fill='%23a66c86'/%3E%3Cpath d='M19 47h27' stroke='%23d9c29a' stroke-width='2'/%3E%3C/svg%3E">
 </head>
 <body>
 <div class="top-bar">
@@ -71,27 +72,28 @@ function startGame() {
 }
 
 /* 初始化网格 */
-function initGrid() {
-  grid = Array.from({length: ROWS}, () =>
-    Array.from({length: COLS}, () => Math.floor(Math.random() * COLORS.length))
-  );
-  // 确保没有初始消除
-  let changed = true;
-  while (changed) {
-    changed = false;
-    for (let r = 0; r < ROWS; r++) {
-      for (let c = 0; c < COLS; c++) {
-        // 横向3连
-        if (c >= 2 && grid[r][c] === grid[r][c-1] && grid[r][c] === grid[r][c-2]) {
-          grid[r][c] = (grid[r][c] + 1) % COLORS.length; changed = true;
-        }
-        // 纵向3连
-        if (r >= 2 && grid[r][c] === grid[r-1][c] && grid[r][c] === grid[r-2][c]) {
-          grid[r][c] = (grid[r][c] + 1) % COLORS.length; changed = true;
-        }
-      }
+function hasInitialMatch() {
+  for (let r = 0; r < ROWS; r++) {
+    for (let c = 0; c < COLS; c++) {
+      if (c >= 2 && grid[r][c] === grid[r][c-1] && grid[r][c] === grid[r][c-2]) return true;
+      if (r >= 2 && grid[r][c] === grid[r-1][c] && grid[r][c] === grid[r-2][c]) return true;
     }
   }
+  return false;
+}
+
+function initGrid() {
+  for (let attempt = 0; attempt < 100; attempt++) {
+    grid = Array.from({length: ROWS}, () =>
+      Array.from({length: COLS}, () => Math.floor(Math.random() * COLORS.length))
+    );
+    if (!hasInitialMatch()) return;
+  }
+
+  // Deterministic fallback: guarantees no initial 3-in-a-row.
+  grid = Array.from({length: ROWS}, (_, r) =>
+    Array.from({length: COLS}, (_, c) => (r * 2 + c) % COLORS.length)
+  );
 }
 
 /* 渲染 */
