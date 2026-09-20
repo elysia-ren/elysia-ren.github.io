@@ -132,16 +132,21 @@ canvas.addEventListener('touchend', e => {
 
 /* 生成食物（避开蛇身） */
 function spawnFood() {
-  let pos;
-  do { pos = [Math.floor(Math.random() * COLS), Math.floor(Math.random() * ROWS)]; }
-  while (snake.some(s => s[0] === pos[0] && s[1] === pos[1]));
-  food = pos;
-  // 随机生成加速道具
-  if (Math.random() < 0.3 && !bonus) {
-    let bp;
-    do { bp = [Math.floor(Math.random() * COLS), Math.floor(Math.random() * ROWS)]; }
-    while (snake.some(s => s[0] === bp[0] && s[1] === bp[1]) || (bp[0]===food[0] && bp[1]===food[1]));
-    bonus = { pos: bp, timer: 80 }; // 存在80帧
+  const free = [];
+  for (let x = 0; x < COLS; x++) {
+    for (let y = 0; y < ROWS; y++) {
+      if (!snake.some(s => s[0] === x && s[1] === y)) free.push([x, y]);
+    }
+  }
+  if (!free.length) {
+    gameOver();
+    return;
+  }
+  food = free[Math.floor(Math.random() * free.length)];
+  bonus = null;
+  if (Math.random() < 0.3 && free.length > 1) {
+    const candidates = free.filter(p => p[0] !== food[0] || p[1] !== food[1]);
+    bonus = { pos: candidates[Math.floor(Math.random() * candidates.length)], timer: 80 };
   }
 }
 
@@ -171,6 +176,7 @@ function tick() {
     score += 10;
     addEffect(food[0] * CELL + CELL/2, food[1] * CELL + CELL/2, '#FFE0E9');
     spawnFood();
+    if (!alive) return;
     // 加速
     if (speed > 80) { speed -= 1; clearInterval(timer); timer = setInterval(tick, speed); }
   } else {
