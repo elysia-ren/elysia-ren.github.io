@@ -109,6 +109,7 @@ function slide(row) {
 }
 
 function move(dir) {
+  if (won) return false;
   let moved = false;
   const old = JSON.stringify(grid);
 
@@ -141,9 +142,10 @@ function move(dir) {
         document.getElementById('winScore').textContent = score;
         document.getElementById('winScreen').style.display = 'flex';
       }, 300);
+      return true;
     }
     // 检测失败
-    if (!canMove()) {
+    if (!won && !canMove()) {
       setTimeout(() => {
         document.getElementById('loseScore').textContent = score;
         document.getElementById('loseScreen').style.display = 'flex';
