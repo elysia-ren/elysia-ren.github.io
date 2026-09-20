@@ -889,3 +889,256 @@ body{background-image:none!important}
 .section-title::after{background:#cfafbd!important}
 .footer{background:#f7f3ef!important}
 @media(max-width:768px){.card{grid-template-columns:42px minmax(0,1fr);grid-template-rows:auto auto auto;column-gap:14px}.card .card-btn{grid-column:2;grid-row:3;justify-self:start;margin-top:10px}}
+
+/* =========================================================
+   ELYSIA — SPRING LIGHT PASS
+   More beauty, less dashboard.
+   ========================================================= */
+:root{
+  --primary:#c987a6;
+  --primary-dark:#9d617e;
+  --ink:#51464e;
+  --muted:#887b83;
+  --paper:#fcfaf7;
+  --petal:#f4dce6;
+  --lavender:#e7e0ef;
+  --champagne:#dec99d;
+}
+body{
+  background:
+    radial-gradient(ellipse at 14% 9%,rgba(235,205,219,.42),transparent 28%),
+    radial-gradient(ellipse at 88% 23%,rgba(228,220,238,.34),transparent 26%),
+    linear-gradient(180deg,#fcfaf7 0%,#fbf8f5 48%,#f9f5f2 100%)!important;
+  color:var(--ink)!important;
+}
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;
+  background:
+    radial-gradient(circle at 50% 0%,rgba(255,255,255,.72),transparent 38%),
+    linear-gradient(120deg,transparent 0 46%,rgba(255,255,255,.26) 50%,transparent 54%);
+}
+.navbar{
+  padding:18px 6%!important;
+  background:rgba(252,250,247,.78)!important;
+  border-bottom:1px solid rgba(213,194,201,.44)!important;
+  box-shadow:0 8px 28px rgba(94,67,83,.035)!important;
+}
+.logo{font-family:Georgia,"Times New Roman",serif;font-size:1.25rem!important;letter-spacing:.08em!important}
+.logo-icon{
+  width:34px!important;height:34px!important;border-radius:50%!important;
+  background:radial-gradient(circle at 35% 30%,#fff7fa 0%,#f2dfe7 55%,#e8dced 100%)!important;
+  border:1px solid rgba(181,139,159,.38)!important;
+}
+.logo-letter{font-size:1.1rem!important;color:var(--primary-dark)!important}
+.nav-links a{
+  font-family:"Segoe UI","PingFang SC",sans-serif;
+  letter-spacing:.04em!important;
+  color:#6f626a!important;
+}
+.nav-links a:hover{background:rgba(239,224,232,.50)!important}
+.nav-links a.active{
+  background:rgba(239,224,232,.72)!important;
+  color:#915872!important;
+}
+.volume-icon{
+  border-color:rgba(187,148,166,.38)!important;
+  color:#97637c!important;
+}
+
+.hero{
+  max-width:1180px!important;
+  min-height:690px;
+  padding:150px 6% 90px!important;
+  display:grid!important;
+  grid-template-columns:minmax(0,1.08fr) minmax(330px,.92fr)!important;
+  gap:68px!important;
+  align-items:center!important;
+  text-align:left!important;
+  overflow:visible!important;
+}
+.hero::before{
+  width:430px!important;height:430px!important;
+  left:auto!important;right:-40px!important;top:140px!important;
+  transform:none!important;border:1px solid rgba(209,165,186,.22)!important;
+  border-radius:48% 52% 58% 42%!important;
+  background:
+    radial-gradient(circle at 35% 28%,rgba(255,255,255,.86),transparent 32%),
+    radial-gradient(circle at 65% 70%,rgba(232,219,239,.44),transparent 46%);
+}
+.hero::after{
+  content:"E L Y S I A · SPRING LIGHT"!important;
+  left:auto!important;right:95px!important;top:135px!important;
+  transform:rotate(6deg)!important;font-size:.62rem!important;
+  letter-spacing:.32em!important;color:rgba(157,107,132,.52)!important;
+}
+.hero h1{
+  max-width:700px!important;
+  margin:0 0 22px!important;
+  font-family:Georgia,"Songti SC","STSong",serif!important;
+  font-size:clamp(3rem,6vw,5.4rem)!important;
+  line-height:1.08!important;
+  letter-spacing:.015em!important;
+  color:#51444d!important;
+}
+.hero h1::after{
+  margin:24px 0 0!important;width:92px!important;
+  background:linear-gradient(90deg,#c987a6,transparent)!important;
+}
+.hero p{
+  max-width:590px!important;margin:0 0 34px!important;
+  font-family:"Segoe UI","PingFang SC",sans-serif!important;
+  font-size:1.03rem!important;line-height:2!important;
+  color:#81747c!important;
+}
+.hero-kicker{
+  display:inline-block;margin-bottom:17px;
+  font-family:"Segoe UI",sans-serif;
+  font-size:.68rem;font-weight:600;
+  letter-spacing:.28em;color:#ad758e;
+}
+.hero-btns{
+  justify-content:flex-start!important;gap:25px!important;
+}
+.hero .btn{
+  position:relative;
+  padding:5px 0 9px!important;
+  border:0!important;
+  border-bottom:1px solid rgba(169,113,139,.55)!important;
+  color:#98637b!important;
+  background:transparent!important;
+  font-family:"Segoe UI",sans-serif;
+  font-size:.9rem!important;
+  letter-spacing:.08em!important;
+}
+.hero .btn::after{
+  content:"↗";margin-left:10px;font-size:.78rem;opacity:.65;
+}
+.hero .btn:hover{
+  color:#76485e!important;
+  border-bottom-color:#9f647e!important;
+  transform:translateX(2px)!important;
+  box-shadow:none!important;
+}
+
+.features{
+  max-width:1140px!important;
+  padding:20px 6% 100px!important;
+}
+.section-title{
+  margin-bottom:52px!important;
+  font-size:2.45rem!important;
+  color:#594c54!important;
+}
+.section-title::before{
+  content:"✦";
+  display:block;
+  margin-bottom:10px;
+  font-family:Georgia,serif;
+  font-size:.85rem;
+  color:#c89bb1;
+}
+.cards-container{
+  grid-template-columns:repeat(3,1fr)!important;
+  gap:24px!important;
+  max-width:none!important;
+}
+.card{
+  position:relative;
+  min-height:230px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:flex-start!important;
+  justify-content:space-between!important;
+  padding:30px 28px!important;
+  text-align:left!important;
+  background:linear-gradient(145deg,rgba(255,255,255,.76),rgba(248,240,243,.52))!important;
+  border:1px solid rgba(218,198,207,.74)!important;
+  border-radius:24px!important;
+  box-shadow:0 16px 45px rgba(93,68,83,.06)!important;
+  overflow:hidden!important;
+}
+.card::before{
+  content:"";position:absolute;width:110px;height:110px;
+  right:-34px;top:-34px;border-radius:50%;
+  background:radial-gradient(circle,rgba(231,214,226,.55),transparent 70%);
+}
+.card::after{
+  content:"";position:absolute;left:28px;top:0;width:46px;height:2px;
+  background:linear-gradient(90deg,#c987a6,transparent);
+}
+.card:hover{
+  transform:translateY(-5px)!important;
+  box-shadow:0 22px 55px rgba(93,68,83,.10)!important;
+  border-color:rgba(199,157,177,.78)!important;
+}
+.card-icon{
+  width:42px!important;height:42px!important;
+  margin:0 0 27px!important;border-radius:50%!important;
+  background:linear-gradient(145deg,#f7e6ec,#ece7f1)!important;
+  border:1px solid rgba(207,173,190,.52)!important;
+}
+.card-icon i{color:#a86988!important;font-size:.95rem!important}
+.card h3{
+  margin:0 0 9px!important;
+  font-family:Georgia,"Songti SC","STSong",serif!important;
+  font-size:1.5rem!important;font-weight:500!important;color:#574c53!important;
+}
+.card p{
+  margin:0!important;
+  color:#857982!important;
+  font-size:.92rem!important;
+  line-height:1.8!important;
+}
+.card .card-btn{
+  margin-top:24px!important;
+  padding:0 0 4px!important;
+  border:0!important;border-bottom:1px solid rgba(172,120,143,.44)!important;
+  border-radius:0!important;background:transparent!important;
+  color:#9c637d!important;
+  font-size:.84rem!important;letter-spacing:.06em;
+}
+.card .card-btn:hover{
+  color:#75485d!important;background:transparent!important;
+  border-bottom-color:#9c637d!important;
+}
+
+.footer{
+  margin-top:20px!important;
+  padding:60px 6% 26px!important;
+  background:linear-gradient(180deg,#f8f3f0,#f4efec)!important;
+  border-top:1px solid rgba(209,191,196,.48)!important;
+}
+.footer-content{max-width:1140px!important}
+.footer .logo{font-size:1.1rem!important}
+.footer-links h4{
+  font-family:Georgia,serif!important;
+  font-size:1rem!important;
+  color:#635760!important;
+}
+.footer-brand p{font-size:.9rem!important;line-height:1.9!important}
+.copyright{font-size:.78rem!important;letter-spacing:.04em}
+
+@media(max-width:900px){
+  .hero{
+    min-height:auto!important;
+    grid-template-columns:1fr!important;
+    padding-top:150px!important;
+    gap:40px!important;
+  }
+  .hero::before{
+    width:320px!important;height:320px!important;
+    right:-30px!important;top:110px!important;opacity:.7;
+  }
+  .hero::after{right:32px!important;top:106px!important}
+  .hero h1{max-width:650px!important;font-size:clamp(2.8rem,11vw,4.5rem)!important}
+  .cards-container{grid-template-columns:1fr!important}
+}
+@media(max-width:560px){
+  .hero{padding:126px 7% 72px!important}
+  .hero::before{width:250px!important;height:250px!important;top:72px!important;right:-55px!important}
+  .hero::after{top:72px!important;right:18px!important;font-size:.52rem!important}
+  .hero h1{font-size:clamp(2.55rem,14vw,4rem)!important}
+  .hero p{font-size:.96rem!important}
+  .features{padding-left:7%!important;padding-right:7%!important}
+  .card{min-height:215px!important}
+}
