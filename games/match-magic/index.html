@@ -7,9 +7,9 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{background:#1a1028;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100dvh;font-family:'Segoe UI',sans-serif;color:#e8d5f5;overflow:hidden;touch-action:none}
+body{background:#f8f3f2;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100dvh;font-family:'Segoe UI',sans-serif;color:#564a52;overflow:hidden;touch-action:none}
 .top-bar{position:fixed;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:10px 16px;background:rgba(26,16,40,.9);z-index:10}
-.back-btn{background:linear-gradient(135deg,#D8A3E0,#FFE0E9);color:#fff;border:none;border-radius:50px;padding:8px 16px;font-size:.85rem;cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:6px}
+.back-btn{background:linear-gradient(135deg,#c987a6,#f1d9e3);color:#fff;border:none;border-radius:50px;padding:8px 16px;font-size:.85rem;cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:6px}
 .info{display:flex;gap:16px;font-size:.95rem;font-weight:600}
 .game-area{display:flex;flex-direction:column;align-items:center;gap:12px}
 .board{display:grid;grid-template-columns:repeat(8,1fr);gap:4px;padding:10px;background:rgba(216,163,224,.08);border-radius:14px}
@@ -18,14 +18,15 @@ body{background:#1a1028;display:flex;flex-direction:column;align-items:center;ju
 .cell.selected{border-color:#fff;transform:scale(1.1);box-shadow:0 0 12px rgba(255,255,255,.4)}
 .cell.hint{animation:pulse-hint .8s infinite alternate}
 @keyframes pulse-hint{from{transform:scale(1)}to{transform:scale(1.06)}}
-.msg{font-size:1rem;min-height:24px;color:#D8A3E0}
+.msg{font-size:1rem;min-height:24px;color:#c987a6}
 .overlay{position:fixed;inset:0;background:rgba(26,16,40,.85);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:20;backdrop-filter:blur(6px)}
-.overlay h1{font-size:2rem;margin-bottom:10px;background:linear-gradient(to right,#D8A3E0,#FFE0E9);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.overlay h1{font-size:2rem;margin-bottom:10px;background:linear-gradient(to right,#c987a6,#f1d9e3);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .overlay p{color:#b8a5cc;margin-bottom:20px}
-.overlay button{background:linear-gradient(135deg,#D8A3E0,#FFE0E9);color:#fff;border:none;border-radius:50px;padding:14px 36px;font-size:1.1rem;cursor:pointer;font-weight:600}
+.overlay button{background:linear-gradient(135deg,#c987a6,#f1d9e3);color:#fff;border:none;border-radius:50px;padding:14px 36px;font-size:1.1rem;cursor:pointer;font-weight:600}
 @media(max-width:400px){.cell{width:min(36px,10vw);height:min(36px,10vw);font-size:.95rem}}
 </style>
     <link rel="icon" href="/favicon.svg?v=20260920-3">
+    <link rel="stylesheet" href="../game-theme.css">
 </head>
 <body>
 <div class="top-bar">
@@ -54,7 +55,7 @@ body{background:#1a1028;display:flex;flex-direction:column;align-items:center;ju
 <script>
 /* ========== 磁力消消方阵 ========== */
 const ROWS = 8, COLS = 8;
-const COLORS = ['#D8A3E0','#A6D1FF','#FFE0E9','#A3D9B1','#FFB347','#FF6B8A'];
+const COLORS = ['#c987a6','#ddd5eb','#f1d9e3','#b8d8c7','#e3bd8f','#c98298'];
 const board = document.getElementById('board');
 const msg = document.getElementById('msg');
 let grid, score, moves, target, selected, animating;
