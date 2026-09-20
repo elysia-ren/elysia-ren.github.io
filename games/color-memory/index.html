@@ -98,6 +98,7 @@ async function playSequence(token = gameToken) {
   if (token !== gameToken) return;
   for (let i = 0; i < sequence.length; i++) {
     if (token !== gameToken) return;
+    if (token !== gameToken) return;
     const idx = sequence[i];
     cells[idx].classList.add('active');
     await sleep(400 - Math.min(level * 10, 200));
